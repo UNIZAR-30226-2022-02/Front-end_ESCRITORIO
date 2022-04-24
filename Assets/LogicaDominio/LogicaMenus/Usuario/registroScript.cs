@@ -10,12 +10,13 @@ public class registroScript : MonoBehaviour
 {
 
     public InputField mailInput, passwordInput, repeatPasswordInput,userInput;
-    public Button botonRegistro; //boton de ir al login
+    public Button botonRegistro, botonBack; //boton de ir al login
     private screenManager sm;
     // Start is called before the first frame update
     void Start()
     {
         botonRegistro.onClick.AddListener(registro);
+        botonBack.onClick.AddListener(irLogin);
 
         sm = transform.parent.GetComponent<screenManager>();
     }
@@ -36,5 +37,9 @@ public class registroScript : MonoBehaviour
     */
     
     sm.switchScreens(this.name, "Home");
+  }
+
+  private void irLogin(){
+    sm.switchScreens(this.name, "Login");
   }
 }

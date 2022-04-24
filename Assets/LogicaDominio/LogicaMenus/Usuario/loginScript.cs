@@ -5,38 +5,60 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.Networking;
 
 public class loginScript : MonoBehaviour
 {
-  public InputField mailInput, passwordInput;
-
+  public InputField usernameInput, passwordInput;
   public Button botonLogin, botonRegistro;
+  public GameObject errorMessage;
 
   private screenManager sm;
 
-
   void Start(){
-    botonLogin.onClick.AddListener(login);    
+    botonLogin.onClick.AddListener(loginAsync);    
     botonRegistro.onClick.AddListener(irRegistro); 
 
     sm = transform.parent.GetComponent<screenManager>();
   }
 
-  private void login()
-  {
-    String mail = mailInput.text;
-    String pass =  passwordInput.text;
+  private void  loginAsync(){
+    String user = usernameInput.text;
+    String pass = passwordInput.text;
 
-    /*
-    HttpWebRequest request = (HttpWebRequest)WebRequest.Create();
-    HttpWebResponse response = (HttpWebResponse)request.getResponse();
-    StreamReader reader = new StreamReader(response.getResponseStream());
-    string json = reader.readToEnd();
-    JsonUtility.FromJson<TIPO-DE-DATO-RECIBIDO>(json);
-    */
+    StartCoroutine((rawLogin(user, pass)));
+  }
+  private IEnumerator rawLogin(String username, String password)
+  {
+    WWWForm form = new WWWForm();
+    form.AddField("username", username);
+    form.AddField("password", password);
+    UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/login", form);
     
-    sm.switchScreens(this.name, "Home");
+    yield return req.Send();
+    
+    if (req.error == null)
+    {
+      String res = req.downloadHandler.text;
+
+      if (res == "OK"){
+        Debug.Log("Sesión Iniciada");
+
+        // TODO: Gestionar cookies sesion
+
+        sm.switchScreens(this.name, "Home");
+      }
+      else
+      {
+        errorMessage.SetActive(true);
+      }
+      
+    }
+    else
+    {
+      Debug.Log("Error: " + req.error);
+    }
+
   }
 
   private void irRegistro()
