@@ -4202,7 +4202,7 @@ GameObject:
   - component: {fileID: 778367432}
   - component: {fileID: 778367431}
   m_Layer: 5
-  m_Name: TextoError
+  m_Name: MensajeError
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
