@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PolygonCollider2D))] //Para que coja el contorno de cada pais para el cambio de color
-public class CountyHandler : MonoBehaviour
+public class Territorio : MonoBehaviour
 {
     private string id,propietario;
     private int numTropas;
