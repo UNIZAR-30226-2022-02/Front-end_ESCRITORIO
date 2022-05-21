@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Jugadas
+namespace LogicaInGame.Jugadas
 {
     public class Jugada 
     {
@@ -14,13 +14,12 @@ namespace Jugadas
     {
         public List<string> listaJugadores  { get; set; }
         public int idPrimerJugador { get; set; }
+        public bool partidaSincrona { get; set; }
         
     }
 
     public class JugadaFinTurno : Jugada
-    {
-        
-    }
+    { }
 
     public class JugadaPonerTropas : Jugada
     {
