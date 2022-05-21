@@ -19,7 +19,7 @@ public class loginScript : MonoBehaviour
     botonLogin.onClick.AddListener(loginAsync);    
     botonRegistro.onClick.AddListener(irRegistro); 
 
-    sm = transform.parent.GetComponent<screenManager>();
+    sm = transform.parent.parent.GetComponent<screenManager>();
   }
 
   private void  loginAsync(){
