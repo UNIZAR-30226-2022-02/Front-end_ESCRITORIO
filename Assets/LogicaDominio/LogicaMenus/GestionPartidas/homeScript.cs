@@ -8,10 +8,11 @@ using UnityEngine.UI;
 
 public class homeScript : MonoBehaviour
 {
-    public Button shopButton, historyButton, newGameButton, searchGameButton, joinGameButton;
+    public Button shopButton, historyButton, newGameButton, searchGameButton, joinGameButton,backButton;
     public Text userName;
     public InputField gameCode;
-    public Dropdown option;
+    public Dropdown optionTipo,optionPlayers;
+    public GameObject BordeCrearPartida;
 
     private screenManager sm;
     // Start is called before the first frame update
@@ -19,9 +20,8 @@ public class homeScript : MonoBehaviour
     {
         shopButton.onClick.AddListener(shop);
         historyButton.onClick.AddListener(history);
-        //newGameButton.onClick.AddListener(newGame);
-        //searchGameButton.onClick.AddListener(SearchGame);
-        //joinGameButton.onClick.AddListener(joinGame);
+        newGameButton.onClick.AddListener(newGame);
+        backButton.onClick.AddListener(quitarCrearPartida);
 
         sm = transform.parent.GetComponent<screenManager>();
     }
@@ -35,5 +35,18 @@ public class homeScript : MonoBehaviour
     void history()
     {
         sm.switchScreens(this.name, "Historial");
+    }
+
+    void newGame()
+    {
+        BordeCrearPartida.SetActive(true);
+        
+        //Poner todo lo de meter datos en los dropdown
+
+    }
+
+    void quitarCrearPartida()
+    {
+         BordeCrearPartida.SetActive(false);
     }
 }
