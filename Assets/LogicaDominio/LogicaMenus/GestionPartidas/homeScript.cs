@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class homeScript : MonoBehaviour
 {
-    public Button shopButton, historyButton, newGameButton, searchGameButton, joinGameButton,backButton;
+    public Button shopButton, historyButton, newGameButton, searchGameButton, joinGameButton, backButton;
     public Text userName;
     public InputField gameCode;
     public Dropdown optionTipo,optionPlayers;
@@ -21,9 +21,10 @@ public class homeScript : MonoBehaviour
         shopButton.onClick.AddListener(shop);
         historyButton.onClick.AddListener(history);
         newGameButton.onClick.AddListener(newGame);
-        backButton.onClick.AddListener(quitarCrearPartida);
+        //backButton.onClick.AddListener(quitarCrearPartida);
+        joinGameButton.onClick.AddListener(joinGame);
 
-        sm = transform.parent.GetComponent<screenManager>();
+        sm = transform.parent.parent.GetComponent<screenManager>();
     }
 
     // Update is called once per frame
@@ -47,6 +48,11 @@ public class homeScript : MonoBehaviour
 
     void quitarCrearPartida()
     {
-         BordeCrearPartida.SetActive(false);
+        BordeCrearPartida.SetActive(false);
+    }
+
+    void joinGame()
+    {
+        sm.switchScreens(this.name, "Tablero");
     }
 }

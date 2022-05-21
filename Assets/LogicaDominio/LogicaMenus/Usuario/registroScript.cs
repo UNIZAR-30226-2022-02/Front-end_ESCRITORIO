@@ -18,7 +18,7 @@ public class registroScript : MonoBehaviour
         botonRegistro.onClick.AddListener(registro);
         botonBack.onClick.AddListener(irLogin);
 
-        sm = transform.parent.GetComponent<screenManager>();
+        sm = transform.parent.parent.GetComponent<screenManager>();
     }
 
   private void registro()

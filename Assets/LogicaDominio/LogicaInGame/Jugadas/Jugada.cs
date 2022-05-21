@@ -7,6 +7,7 @@ namespace LogicaInGame.Jugadas
     public class Jugada 
     {
         public int userId { get; set; }
+        public int idPartida { get; set; }
         
     }
 

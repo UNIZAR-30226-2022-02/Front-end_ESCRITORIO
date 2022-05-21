@@ -16,7 +16,7 @@ public class historialScript : MonoBehaviour
     void Start()
     {
         botonBack.onClick.AddListener(irHome);
-        sm = transform.parent.GetComponent<screenManager>();
+        sm = transform.parent.parent.GetComponent<screenManager>();
     }
 
     private void irHome()

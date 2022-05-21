@@ -6,8 +6,10 @@ using UnityEngine;
 
 
 public class screenManager : MonoBehaviour
-{
-    public GameObject[] screens;
+{   
+    public GameObject[] menuScreens;
+    public GameObject fondoMenus;
+    public GameObject tableroScreen;
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +22,22 @@ public class screenManager : MonoBehaviour
         bool fromDisabled = false;
         bool toEnabled = false;
 
-        foreach(GameObject a in screens)
+        
+        // Cambio de partida a menus y viceversa
+        if (tableroScreen.name == from){
+            tableroScreen.SetActive(false);
+            fondoMenus.SetActive(true);
+            return;
+        }
+
+        if (tableroScreen.name == to){
+            tableroScreen.SetActive(true);
+            fondoMenus.SetActive(false);
+            return;
+        }
+
+        // Cambio dentro de menus
+        foreach(GameObject a in menuScreens)
         {
             if (fromDisabled && toEnabled) break;
 
@@ -36,6 +53,8 @@ public class screenManager : MonoBehaviour
                 toEnabled = true;
             }
         }
+
+        
     }
 
     
