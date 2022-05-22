@@ -44,7 +44,9 @@ public class loginScript : MonoBehaviour
       if (res == "OK"){
         Debug.Log("Sesión Iniciada");
 
-        // TODO: Gestionar cookies sesion
+        // Inicia sesion Socket.IO
+        WebSocketHandler wsHandler = transform.parent.parent.GetComponent<WebSocketHandler>();
+        wsHandler.registrarme(username);
 
         sm.switchScreens(this.name, "Home");
       }

@@ -8,6 +8,7 @@ public class Partida : MonoBehaviour
     List<Jugador> jugadores;
     List<Territorio> territorios;
 
+    int idPartida;
     bool partidaSincrona;
     bool faseInicial;
     int nVecesCartasUsadas;
@@ -20,7 +21,6 @@ public class Partida : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        jugadores = new List<Jugador>();
         territorios = new List<Territorio>();
         faseInicial = true;
         nVecesCartasUsadas = 0;
@@ -32,6 +32,13 @@ public class Partida : MonoBehaviour
     // ============================
     // - PROCESAMIENTO DE JUGADAS -
     // ============================
+    private void procesarJugada(JugadaCrearPartida j){
+        Debug.Log("Ejecutando jugada concreta");
+        idPartida = j.idPartida; 
+        jugadores = j.listaJugadores;
+        partidaSincrona = j.partidaSincrona;
+    }
+
     private void procesarJugada(Jugada j){
        
         if (j.GetType() == new JugadaCrearPartida().GetType()){
