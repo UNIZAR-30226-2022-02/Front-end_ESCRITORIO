@@ -1,57 +1,254 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using LogicaInGame.Jugadas;
 
 [RequireComponent(typeof(PolygonCollider2D))] //Para que coja el contorno de cada pais para el cambio de color
 public class Territorio : MonoBehaviour
 {
-    private string id,propietario;
-    private int numTropas;
-    private List<string> TerrColindantes;
+    // Info pais
+    public string id;
+    public List<Territorio> TerrColindantes;
+    
+    // Info propietario
+    int propietario;
+    int numTropas;
 
-    //Tamaño (para el zoom)
-    private Vector3 tamano;
+    // Comunicacion externa
+    private Partida myGame;
+    private ColaJugadas colaJugadas;
+    private WebSocketHandler wsHandler;
+    private Turno turno;
 
+    // GUI
+    public Text numTropasText;
+    public GameObject popUpElegirNumTropas;
+    private Vector3 tamPeq, tamGrand;
     private SpriteRenderer sprite;
-    //void Start(){}
-    //void Update(){}
-    string getId(){
-        return id;
-    }
 
-    string getPropietario(){
-        return propietario;
-    }
-
-    int getNumTropas(){
+    // ====================
+    // - Metodos Publicos -
+    // ====================
+    
+    public int getNumTropas(){
         return numTropas;
     }
-
-    List<string> getTerrColindantes(){
-        return TerrColindantes;
+    public void setNumTropas(int nuevoNumTropas){
+        numTropas = nuevoNumTropas;
+        numTropasText.text = numTropas.ToString();
+    }
+    public int getPropietario(){
+        return propietario;
+    }
+    public void setPropietario( int nuevoPropietario){
+        propietario = nuevoPropietario;
+        Color newColor;
+        switch(propietario){ // TODO: Poner colores
+            case 0:
+                newColor = new Color32();
+                break;
+            case 1:
+                newColor = new Color32();
+                break;
+            case 2:
+                newColor = new Color32();
+                break;
+            case 3:
+                newColor = new Color32();
+                break;
+            case 4:
+                newColor = new Color32();
+                break;
+            case 5:
+                newColor = new Color32();
+                break;
+            default:
+                newColor = new Color32();
+                break;
+        }
+        sprite.color = newColor;
     }
 
-    void OnMouseEnter(){
-        tamano = new Vector3(+10.0f,+10.0f,+0.0f);
-        transform.localScale += tamano;        
+    // ===========================================================================
+    void Start(){
+        myGame = this.transform.parent.parent.parent.gameObject.GetComponent<Partida>();
+        colaJugadas = myGame.gameObject.transform.parent.GetComponent<ColaJugadas>();
+        wsHandler = myGame.gameObject.transform.parent.GetComponent<WebSocketHandler>();
+        turno = myGame.gameObject.transform.Find("Turno").gameObject.GetComponent<Turno>();
+
+        propietario = -1;
+        numTropas = 0;
+        
+        tamPeq = transform.localScale;
+        tamGrand = tamPeq + new Vector3(+8.0f,+8.0f,+0.0f);
+
+        sprite = this.gameObject.GetComponent<SpriteRenderer>();
+
+    }
+
+
+    void Update(){
+        if(myGame.movingFrom != null && myGame.movingFrom == this){
+            transform.localScale = tamGrand;
+        }
+    }
+
+    // =========================
+    // - Generacion de Jugadas -
+    // =========================
+
+    // Acciones
+    Acciones accionActual; // variable temporal
+    enum Acciones{
+        ponerEnVacio1,
+        ponerEnMio1,
+        ponerEnMioN,
+        setTerritorioAtacante,
+        setTerritorioAtacado,
+        setOrigenMover,
+        unSetOrigenMover,
+        setDestinoMover,
+        nula
+    }
+
+    // Verifica que el estado de la partida permita realizar alguna
+    // jugada haciendo click en este territorio.
+    // Si es posible realizar una jugada almacena el tipo en accionActual
+    // para que OnClick() la realize sin necesidad de volver a verificar todo.
+    void OnMouseEnter(){ 
+        if(turno.getTurnoActual() == myGame.myId ){
+            return;
+        }
+
+        // Fase inicial
+        if(turno.getFaseInicial()){
+            bool terrsConq = myGame.todosTerritoriosConquistados();
+            int nTropasSinColocar = myGame.jugadores[myGame.myId].getNTropasSinColocar();
+            // Colocar en terr vacio
+            if(!terrsConq && propietario==-1 && nTropasSinColocar>0){
+                transform.localScale = tamGrand;  
+                accionActual = Acciones.ponerEnVacio1;
+                return;   
+            }
+            // Colocar en mi territorio
+            if(terrsConq && propietario==myGame.myId && nTropasSinColocar>0){
+                transform.localScale = tamGrand;   
+                accionActual = Acciones.ponerEnMio1;  
+                return;   
+            }
+        }
+        // Fase Ataque
+        else{
+            int ft = turno.getFaseTurno();
+            int nTropasSinColocar = myGame.jugadores[myGame.myId].getNTropasSinColocar();
+            // Distribucion
+            if (ft==0 && propietario==myGame.myId){
+                transform.localScale = tamGrand; 
+                accionActual = Acciones.ponerEnMioN;  
+                return;       
+            }
+            // Ataque
+            if (ft==1 && propietario==myGame.myId){
+                transform.localScale = tamGrand; 
+                accionActual = Acciones.setTerritorioAtacante;  
+                return;       
+            }
+            if(ft==1 && myGame.attackingFrom!=null){
+                transform.localScale = tamGrand; 
+                accionActual = Acciones.setTerritorioAtacado;  
+                return;  
+            }
+            // Fortificacion
+            if (ft==2 && propietario==myGame.myId){
+                if(myGame.movingFrom==null && numTropas>1){
+                    transform.localScale = tamGrand; 
+                    accionActual = Acciones.setOrigenMover;
+                    return;
+                }
+                else if(myGame.movingFrom==this){
+                    transform.localScale = tamGrand; 
+                    accionActual = Acciones.unSetOrigenMover;
+                    return;
+                }
+                else{
+                    transform.localScale = tamGrand; 
+                    accionActual = Acciones.setDestinoMover;
+                    return;
+                }
+            }
+        }
     }
 
     void OnMouseExit(){
-        tamano = new Vector3(-10.0f,-10.0f,-0.0f);
-        transform.localScale += tamano;
+        transform.localScale = tamPeq;      
+        accionActual = Acciones.nula;  
     }
 
-    //void CambiarColor(){
+    // Funcion que genera jugadas, las añade a la cola
+    // y las comunica al servidor. Se gestiona:
+    //      finTurno (SOLO de la FASE INICIAL)
+    //      ponerTropas
+    //      moverTropas
+    //      ataqueSincrono
+    //      ataqueAsincrono
+
     void OnMouseClick(){
-        Renderer rend = GetComponent<Renderer>();
-        rend.material.SetColor("_Color", Color.red);
+        if(turno.getTurnoActual() != propietario){
+            return;        
+        }
+        
+        switch (accionActual){
+            // -Fase inicial- 
+            // --------------
+            // Quedan territorios vacios
+            case Acciones.ponerEnVacio1:
+                Jugada j1 = new JugadaPonerTropas(myGame.myId, myGame.idPartida, this.id, 1);
+                Jugada j2 = new JugadaFinTurno(myGame.myId, myGame.idPartida);
+                procesaYEnvia(j1);
+                procesaYEnvia(j2);
+                break;
+
+            // NO quedan territorios vacios
+            case Acciones.ponerEnMio1:
+                j1 = new JugadaPonerTropas(myGame.myId, myGame.idPartida, this.id, 1);
+                j2 = new JugadaFinTurno(myGame.myId, myGame.idPartida);
+                procesaYEnvia(j1);
+                procesaYEnvia(j2);
+                break;
+
+            // -Fase Normal-
+            // -------------
+
+            // Distribucion
+            case Acciones.ponerEnMioN:
+                // obtener (y validar) numTropas
+                
+                break;
+
+            // Ataque
+            case Acciones.setTerritorioAtacante:
+                break;
+            case Acciones.setTerritorioAtacado:
+                // obtener (y validar) numTropas + reset secuencia ataque
+                break;
+
+            // Fortificacion
+            case Acciones.setOrigenMover:
+                break;
+            case Acciones.unSetOrigenMover:
+                break;
+            case Acciones.setDestinoMover:
+                // obtener (y validar) numTropas + reset secuencia mover
+                break;
+        }
+
+        // Resetea accion
+        accionActual = Acciones.nula;
     }
 
-    //Nos pasan el color como parámetro según el jugador que posea el territorio
-    void CambiarColor(Color color){
-        sprite = GetComponent<SpriteRenderer>();
-        
-        //Color color = new Color(0.2F, 0.3F, 0.4F);
-        sprite.color = color;
-    }
+    private void procesaYEnvia(Jugada j){
+        colaJugadas.nuevaJugada(j);
+        wsHandler.notificaJugada(j);
+    } 
 }
