@@ -5,13 +5,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 public class registroScript : MonoBehaviour
 {
 
     public InputField mailInput, passwordInput, repeatPasswordInput,userInput;
-    public Button botonRegistro, botonBack; //boton de ir al login
+    public Button botonRegistro, botonBack;
+    public Text errorContrasena, errorUsuario;
     private screenManager sm;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,18 +28,42 @@ public class registroScript : MonoBehaviour
   {
     String mail = mailInput.text;
     String pass =  passwordInput.text;
-    String RepeatPass =  repeatPasswordInput.text;
+    String repeatPass =  repeatPasswordInput.text;
     String user =  userInput.text;
 
-    /*
-    HttpWebRequest request = (HttpWebRequest)WebRequest.Create();
-    HttpWebResponse response = (HttpWebResponse)request.getResponse();
-    StreamReader reader = new StreamReader(response.getResponseStream());
-    string json = reader.readToEnd();
-    JsonUtility.FromJson<TIPO-DE-DATO-RECIBIDO>(json);
-    */
-    
-    sm.switchScreens(this.name, "Home");
+    StartCoroutine(envioRegistro(mail,pass,repeatPass,user));    
+  }
+
+  private IEnumerator envioRegistro(string mail, string pass, string repeatPass, string user)
+  {
+    WWWForm form = new WWWForm();
+    form.AddField("username", user);
+    form.AddField("password", pass);
+    form.AddField("repeatPassword",repeatPass);
+    form.AddField("mail", mail);
+    UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/registro", form);
+
+    yield return req.Send();
+
+    if (req.error == "Contraseñas no coinciden")
+    {
+      //Quito el otro mensaje de error si está visible
+      errorUsuario.gameObject.SetActive(false);
+      errorContrasena.gameObject.SetActive(true);
+    }
+    else if(req.error == "Nombre de usuario no disponible"){
+      //Quito el otro mensaje de error si está visible
+      errorContrasena.gameObject.SetActive(false);
+      errorUsuario.gameObject.SetActive(true);
+    }
+    else{
+      //Si hay algun mensaje de error visible lo quito y me voy al home
+      errorContrasena.gameObject.SetActive(false);
+      errorUsuario.gameObject.SetActive(false);
+
+      //RELLENAR EL CAMPO MYUSERNAME DE VARIALBLES ENTORNO
+      sm.switchScreens(this.name, "home");
+    }
   }
 
   private void irLogin(){

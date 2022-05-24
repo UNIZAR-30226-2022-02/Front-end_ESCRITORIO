@@ -9,6 +9,7 @@ using UnityEngine.Networking;
 
 public class loginScript : MonoBehaviour
 {
+  public string nombreUsuario;
   public InputField usernameInput, passwordInput;
   public Button botonLogin, botonRegistro;
   public GameObject errorMessage;
