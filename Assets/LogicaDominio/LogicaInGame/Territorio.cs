@@ -52,30 +52,8 @@ public class Territorio : MonoBehaviour
     }
     public void setPropietario( int nuevoPropietario){
         propietario = nuevoPropietario;
-        Color newColor;
-        switch(propietario){ // TODO: Poner colores
-            case 0:
-                newColor = new Color32();
-                break;
-            case 1:
-                newColor = new Color32();
-                break;
-            case 2:
-                newColor = new Color32();
-                break;
-            case 3:
-                newColor = new Color32();
-                break;
-            case 4:
-                newColor = new Color32();
-                break;
-            case 5:
-                newColor = new Color32();
-                break;
-            default:
-                newColor = new Color32();
-                break;
-        }
+        Color newColor = myGame.jugadores[nuevoPropietario].myColor;
+        
         sprite.color = newColor;
     }
 
@@ -129,7 +107,8 @@ public class Territorio : MonoBehaviour
     // Si es posible realizar una jugada almacena el tipo en accionActual
     // para que OnClick() la realize sin necesidad de volver a verificar todo.
     void OnMouseEnter(){ 
-        if(turno.getTurnoActual() == myGame.myId ){
+        if(turno.getTurnoActual() != myGame.myId ){
+            StartCoroutine(myGame.ShowError("Territorio onEnter: No es tu turno", 2));
             return;
         }
 
@@ -205,8 +184,10 @@ public class Territorio : MonoBehaviour
     //      ataqueSincrono
     //      ataqueAsincrono
 
-    void OnMouseClick(){
-        if(turno.getTurnoActual() != propietario){
+    void OnMouseDown(){
+        Debug.Log("Accion de mouseDown: " + accionActual.ToString());
+
+        if(turno.getTurnoActual() != myGame.myId){
             return;        
         }
         

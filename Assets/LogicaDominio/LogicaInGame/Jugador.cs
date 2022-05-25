@@ -11,6 +11,7 @@ public class Jugador : MonoBehaviour
 
     
     public int id;
+    public Color32 myColor;
     public string userName { get; set;}
     public Cartas cartas { get; set; }
     private int nTropasSinColocar;
@@ -52,6 +53,8 @@ public class Jugador : MonoBehaviour
         cartas = new Cartas();
         haConquistado = false;
 
+        // GUI
+        this.GetComponent<Image>().color = myColor;
         ultTurno = -1;
     }
 

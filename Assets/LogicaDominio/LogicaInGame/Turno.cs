@@ -42,6 +42,7 @@ public class Turno : MonoBehaviour
             
             if(totalTropas == 0){
                 // No quedan tropas por colocar
+                Debug.Log("Turno: Fin de la fase inicial.");
                 faseInicial =false;
                 myGame.jugadores[turnoActual].anadirTropasTurno();
             }

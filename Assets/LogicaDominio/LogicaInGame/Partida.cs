@@ -9,6 +9,7 @@ public class Partida : MonoBehaviour
 {    
     WebSocketHandler wsHandler;
     ColaJugadas jugadas;
+    VariablesEntorno entorno;
 
     // Info Partida
     public int idPartida {get; set;}
@@ -24,7 +25,7 @@ public class Partida : MonoBehaviour
     Turno turno;
 
     // Territorios
-    List<Territorio> territorios;
+    public List<Territorio> territorios;
 
     // Jugadores eliminados
     int nJugadoresEliminados;
@@ -67,8 +68,9 @@ public class Partida : MonoBehaviour
     
     void Start()
     {
-        wsHandler = this.transform.parent.GetComponent<WebSocketHandler>();
-        jugadas = this.transform.parent.GetComponent<ColaJugadas>();
+        wsHandler = this.transform.parent.gameObject.GetComponent<WebSocketHandler>();
+        jugadas = this.transform.parent.gameObject.GetComponent<ColaJugadas>();
+        entorno =  this.transform.parent.gameObject.GetComponent<VariablesEntorno>();
 
         // Info partida
         nVecesCartasUsadas = 0;
@@ -77,38 +79,20 @@ public class Partida : MonoBehaviour
 
         turno = this.transform.Find("Turno").gameObject.GetComponent<Turno>();
         
-        territorios = getListaTerritorios();
-
         nJugadoresEliminados = 0;
         jugadoresEliminados = new List<int>();
 
         attackingFrom = null;
         movingFrom = null;
         ultJugada = null;
+
+        MensajeError = this.transform.Find("MensajeError").gameObject.GetComponent<Text>();
     }
 
     void Update(){
         while(jugadas.hayJugadas()){
             procesarJugada(jugadas.ultimaJugada());
         }
-    }
-
-    List<Territorio> getListaTerritorios(){
-        List<Transform> continentes = new List<Transform>();
-        continentes.Add(transform.Find("Mapa").Find("Africa"));
-        continentes.Add(transform.Find("Mapa").Find("Asia"));
-        continentes.Add(transform.Find("Mapa").Find("Europa"));
-        continentes.Add(transform.Find("Mapa").Find("Oceania"));
-        continentes.Add(transform.Find("Mapa").Find("Sudamerica"));
-        continentes.Add(transform.Find("Mapa").Find("Norteamerica"));
-        
-        List<Territorio> res = new List<Territorio>();
-        foreach( Transform continente in continentes){
-            foreach (Transform territorio in continente){
-                res.Add(territorio.gameObject.GetComponent<Territorio>());
-            }
-        }
-        return res;
     }
 
     // ============================
@@ -167,10 +151,9 @@ public class Partida : MonoBehaviour
             jugadores[i].inicializa(j.listaJugadores[i], nJugadores);
 
             //Inicializo myId
-            myId = 0;  // DEBUG!
+            myId = 1;  // DEBUG!
             /*
-            VariablesEntorno ve = this.transform.parent.gameObject.GetComponent<VariablesEntorno>();
-            if(j.listaJugadores[i] == ve.myUsername){
+            if(j.listaJugadores[i] == entorno.myUsername){
                 myId = i;
             }
             */
@@ -209,7 +192,7 @@ public class Partida : MonoBehaviour
                 return;
             } 
 
-            t.setPropietario(myId);
+            t.setPropietario(j.userId);
 
             int nuevoNumTropas = t.getNumTropas() + j.numTropas;
             t.setNumTropas(nuevoNumTropas);

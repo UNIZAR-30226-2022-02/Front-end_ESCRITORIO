@@ -21,6 +21,7 @@ public class WebSocketHandler : MonoBehaviour
     }
 
     public void notificaJugada(Jugada j){
+        Debug.Log("WebSocketHandler: Enviando jugada... " + j);
         string json = JsonUtility.ToJson(j);
         socket.Emit("nueva_jugada", new JSONObject(json));
     }
@@ -29,19 +30,21 @@ public class WebSocketHandler : MonoBehaviour
     // ==========================================================
     void Start()
     {
+
         colaJugadas = this.GetComponent<ColaJugadas>();
 
         GameObject go = GameObject.Find("SocketIO");
 		socket = go.GetComponent<SocketIOComponent>();
         
 		socket.On("nueva_jugada", nuevaJugada);  
-        socket.On("clientes", nuevaJugada);  
+        //socket.On("clientes", nuevaJugada);  
     }
 
     private void nuevaJugada(SocketIOEvent e){
-        Debug.Log("WebSocketHandler: Encolando nueva jugada...");
         string json = e.data.ToString();
         Jugada j = Jugada.parseJsonJugada(json);        
+
+        Debug.Log("WebSocketHandler: Encolando nueva jugada...");
         colaJugadas.nuevaJugada(j);
     }
 
