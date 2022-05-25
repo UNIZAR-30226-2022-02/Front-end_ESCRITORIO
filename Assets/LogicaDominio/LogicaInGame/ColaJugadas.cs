@@ -11,6 +11,9 @@ public class ColaJugadas : MonoBehaviour
     void Start()
     {
         myQueue = new Queue<Jugada>();
+        myQueue.Enqueue(new JugadaCrearPartida(-1, 0, new string[]{"jesus", "juan", "sergio"}, true));
+        myQueue.Enqueue(new JugadaPonerTropas(0, 0, "af1", 1));
+
     }
 
     public void nuevaJugada(Jugada j){

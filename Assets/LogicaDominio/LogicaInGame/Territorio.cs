@@ -22,8 +22,8 @@ public class Territorio : MonoBehaviour
     private Turno turno;
 
     // GUI
-    public Text numTropasText;
-    public GameObject popUpElegirNumTropas;
+    private Text numTropasText;
+    private GameObject popUpElegirNumTropas;
     private Vector3 tamPeq, tamGrand;
     private SpriteRenderer sprite;
 
@@ -31,6 +31,15 @@ public class Territorio : MonoBehaviour
     // - Metodos Publicos -
     // ====================
     
+    public bool intentarConquistar(int idConquistador){
+        if(numTropas <= 0){
+            propietario = idConquistador;
+            return true;
+        }
+
+        return false;
+    }
+
     public int getNumTropas(){
         return numTropas;
     }
@@ -84,6 +93,9 @@ public class Territorio : MonoBehaviour
         tamGrand = tamPeq + new Vector3(+8.0f,+8.0f,+0.0f);
 
         sprite = this.gameObject.GetComponent<SpriteRenderer>();
+
+        numTropasText = this.transform.Find("tropas").Find("num").gameObject.GetComponent<Text>();
+        popUpElegirNumTropas = this.transform.parent.parent.parent.Find("ElegirNumTropas").gameObject;
 
     }
 
@@ -205,21 +217,21 @@ public class Territorio : MonoBehaviour
             case Acciones.ponerEnVacio1:
                 Jugada j1 = new JugadaPonerTropas(myGame.myId, myGame.idPartida, this.id, 1);
                 Jugada j2 = new JugadaFinTurno(myGame.myId, myGame.idPartida);
-                procesaYEnvia(j1);
-                procesaYEnvia(j2);
+                wsHandler.notificaJugada(j1);
+                wsHandler.notificaJugada(j2);
                 break;
 
             // NO quedan territorios vacios
             case Acciones.ponerEnMio1:
                 j1 = new JugadaPonerTropas(myGame.myId, myGame.idPartida, this.id, 1);
                 j2 = new JugadaFinTurno(myGame.myId, myGame.idPartida);
-                procesaYEnvia(j1);
-                procesaYEnvia(j2);
+                wsHandler.notificaJugada(j1);
+                wsHandler.notificaJugada(j2);
                 break;
 
             // -Fase Normal-
             // -------------
-
+            
             // Distribucion
             case Acciones.ponerEnMioN:
                 // obtener (y validar) numTropas
@@ -247,8 +259,4 @@ public class Territorio : MonoBehaviour
         accionActual = Acciones.nula;
     }
 
-    private void procesaYEnvia(Jugada j){
-        colaJugadas.nuevaJugada(j);
-        wsHandler.notificaJugada(j);
-    } 
 }

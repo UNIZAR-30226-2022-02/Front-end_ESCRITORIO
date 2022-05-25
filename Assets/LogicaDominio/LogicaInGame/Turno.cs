@@ -28,7 +28,25 @@ public class Turno : MonoBehaviour
             turnoActual++;
             turnoActual %= myGame.nJugadores;
         }
-        while( myGame.jugadoresEliminados.Contains(turnoActual));
+        while(myGame.jugadoresEliminados.Contains(turnoActual));
+
+        if (!faseInicial){
+            myGame.jugadores[turnoActual].anadirTropasTurno();
+        }
+        else{
+            // Fase inicial 
+            int totalTropas = 0;
+            foreach (Jugador j in myGame.jugadores){
+                totalTropas += j.getNTropasSinColocar();
+            }
+            
+            if(totalTropas == 0){
+                // No quedan tropas por colocar
+                faseInicial =false;
+                myGame.jugadores[turnoActual].anadirTropasTurno();
+            }
+            
+        }
     }
 
     public bool checkTurno(Jugada j){
@@ -132,13 +150,8 @@ public class Turno : MonoBehaviour
         // Finaliza mi turno
         if (faseTurno == 0){
             Jugada j = new JugadaFinTurno(myGame.myId, myGame.idPartida); 
-            procesaYEnvia(j);        
+            wsHandler.notificaJugada(j);        
         }
     }
-
-    private void procesaYEnvia(Jugada j){
-        colaJugadas.nuevaJugada(j);
-        wsHandler.notificaJugada(j);
-    } 
 
 }

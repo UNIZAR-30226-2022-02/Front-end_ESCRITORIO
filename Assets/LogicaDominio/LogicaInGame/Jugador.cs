@@ -25,6 +25,10 @@ public class Jugador : MonoBehaviour
     // ====================
     // - Metodos Publicos -
     // ====================
+
+    public void anadirTropasTurno(){
+        //TODO: anadir las tropas en funcion de los territorios
+    }
     public void setNTropasSinColocar(int nTropas){
         nTropasSinColocar = nTropas;
         nTropasText.text = nTropas.ToString();
@@ -53,10 +57,17 @@ public class Jugador : MonoBehaviour
 
 
     void Update(){
+        // Cambios de turno
         int turnoActual = turno.getTurnoActual();
         if( turnoActual!= ultTurno){
+            // Colores (GUI)
             setColor(turnoActual);
             ultTurno = turnoActual;
+
+            // Reset haConquistado
+            if(turnoActual == id){
+                haConquistado = false;
+            }
         }
     }
 
@@ -91,7 +102,7 @@ public class Jugador : MonoBehaviour
 
     private void setColor(int turnoActual){
         if(myGame.jugadoresEliminados.Contains(turnoActual)){
-            infoJugador.color = new Color32(195,80,80,255);
+            infoJugador.color = new Color32(195,80,80,125);
             return;
         }
 

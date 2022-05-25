@@ -26,7 +26,7 @@ public class WebSocketHandler : MonoBehaviour
     }
 
 
-    // Start is called before the first frame update
+    // ==========================================================
     void Start()
     {
         colaJugadas = this.GetComponent<ColaJugadas>();
@@ -37,7 +37,6 @@ public class WebSocketHandler : MonoBehaviour
 		socket.On("nueva_jugada", nuevaJugada);  
         socket.On("clientes", nuevaJugada);  
     }
-
 
     private void nuevaJugada(SocketIOEvent e){
         Debug.Log("WebSocketHandler: Encolando nueva jugada...");
