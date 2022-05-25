@@ -20,7 +20,9 @@ public class homeScript : MonoBehaviour
     void Start()
     {
         username.text = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().myUsername;
-
+        
+        StartCoroutine(RellenarDatos());
+        
         //CUANDO ENTRE TENGO QUE VER SI ESTOY EN ALGUNA PARTIDA, SI ESTOY PEDIR LA LISTA DE JUGADAS Y METERLAS A LA COLA
 
         //Pedir datos tipo de mapa, tipo de ficha
@@ -37,6 +39,18 @@ public class homeScript : MonoBehaviour
         sm = transform.parent.parent.GetComponent<screenManager>();
     }
 
+    //Corutina para rellenar los datos de las variables de entorno
+    private IEnumerator RellenarDatos()
+    {
+        WWWForm form = new WWWForm();
+        string user = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().myUsername;
+        form.AddField("username", user);
+        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/login/items", form);
+
+        yield return req.Send();
+
+        //String res = req.downloadHandler.text
+    }
     //Muestro los posibles mensajes de error del home durante dos segundos
     private IEnumerator MostrarError(string mensajeError)
     {
@@ -112,9 +126,9 @@ public class homeScript : MonoBehaviour
     //que busque una partida
     private void buscarPartida()
     {
-       /* VariablesEntorno vars = GetComponent<VariablesEntorno>();
+       /* bool estoyPartida = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().estoyEnPartida;
         //Si estoy en partida muestro error
-        if(vars.estoyEnPartida){
+        if(estoyPartida){
             StartCoroutine(MostrarError("estoyEnPartida"));
         }
         //Sino le envio datos al servidor para que busque una partida

@@ -14,12 +14,11 @@ public class tiendaScript : MonoBehaviour
     private screenManager sm;
     public Button botonBack, botonComprarMapa, botonComprarFicha, botonSeleccionarMapa, botonSeleccionarFicha, botonDeseleccionarMapa, botonDeseleccionarFicha;
     public Text username, errorCompraMapa, errorCompraFicha;
-
+    
     void Start()
     {
-        //VariablesEntorno variablesEntorno = GetComponent<VariablesEntorno>();
         username.text = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().myUsername;
-        
+
         //Creo los eventos de los botones
         
         botonBack.onClick.AddListener(irHome);
@@ -36,7 +35,7 @@ public class tiendaScript : MonoBehaviour
         sm = transform.parent.parent.GetComponent<screenManager>();
 
         //Para inicializar la pantalla si hay algo comprado o seleccionado
-        if (transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().fichaComprada == true){
+       /* if (transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().fichaComprada == true){
             ActivarComprarFicha();
             Debug.Log ("ficha Comprada");
             if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().fichaSeleccionada == true){
@@ -50,28 +49,25 @@ public class tiendaScript : MonoBehaviour
             if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().mapaSeleccionado == true){
                 ActivarSeleccionarMapa();
             }
-        }
+        }*/
     }
 
     private void irHome()
     {
+        
         sm.switchScreens(this.name, "Home");
     }
 
     private void ActivarComprarMapa()
     {
         //Empiezo corutina
-        StartCoroutine(compraObjeto("mapa"));
-
-        botonComprarMapa.gameObject.SetActive(false);
-        botonSeleccionarMapa.gameObject.SetActive(true);
-        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setMapaComprado();
+        StartCoroutine(compraObjeto("mapa"));       
     }
 
     private void ActivarSeleccionarMapa()
     {
         //Empiezo corutina
-        StartCoroutine(seleccionObjeto("mapa"));
+        StartCoroutine(seleccionMapa());
 
         botonSeleccionarMapa.gameObject.SetActive(false);
         botonDeseleccionarMapa.gameObject.SetActive(true);
@@ -91,17 +87,13 @@ public class tiendaScript : MonoBehaviour
     private void ActivarComprarFicha()
     {
         //Empiezo corutina
-        StartCoroutine(compraObjeto("ficha"));
-
-        botonComprarFicha.gameObject.SetActive(false);
-        botonSeleccionarFicha.gameObject.SetActive(true);
-        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaComprada();
+        StartCoroutine(compraObjeto("ficha"));   
     }
 
     private void ActivarSeleccionarFicha()
     {
         //Empiezo corutina
-        StartCoroutine(seleccionObjeto("ficha"));
+        StartCoroutine(seleccionFicha());
 
         botonSeleccionarFicha.gameObject.SetActive(false);
         botonDeseleccionarFicha.gameObject.SetActive(true);
@@ -125,53 +117,79 @@ public class tiendaScript : MonoBehaviour
         form.AddField("username", user);
 
         if (objetoComprado == "mapa"){
-            form.AddField("compradoMapa","true");
+            form.AddField("item","1");
         }
         else{
-            //Ver el formato de los mensajes
-            form.AddField("compradoFicha","true");    
+            form.AddField("item","2");    
         }
 
         //Envio el mensaje
-        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/tienda", form);
+        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/tienda/comprar", form);
         yield return req.Send();
 
+        string res = req.downloadHandler.text;
+
+        Debug.Log("Recibido resultado compra " + objetoComprado + " " + res);
         //La compra no se ha podido realizar y muestro los mensajes de error
-        if (req.error != null & objetoComprado == "mapa"){
+        if (res == "false" & objetoComprado == "mapa"){
             errorCompraMapa.gameObject.SetActive(true);
             yield return new WaitForSeconds(2);
             errorCompraMapa.gameObject.SetActive(false);
+            Debug.Log("No se ha podido comprar el mapa");
+
         }
-        else if(req.error != null & objetoComprado == "ficha"){
+        else if(res == "false" & objetoComprado == "ficha"){
             errorCompraFicha.gameObject.SetActive(true);
             yield return new WaitForSeconds(2);
             errorCompraFicha.gameObject.SetActive(false);
+            Debug.Log("No se ha podido comprar la ficha");
         }
         //La compra se ha podido realizar
-        else{
+        else if(res == "true" & objetoComprado == "mapa"){
+            Debug.Log("Se ha podido realizar la compra de mapa");
             errorCompraMapa.gameObject.SetActive(false);
             errorCompraFicha.gameObject.SetActive(false);
-        }    
+            botonComprarMapa.gameObject.SetActive(false);
+            botonSeleccionarMapa.gameObject.SetActive(true);
+            transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setMapaComprado();
+        }   
+        else if(res == "true" & objetoComprado == "ficha"){
+            Debug.Log("Se ha podido realizar la compra de ficha");
+            errorCompraMapa.gameObject.SetActive(false);
+            errorCompraFicha.gameObject.SetActive(false);
+            botonComprarFicha.gameObject.SetActive(false);
+            botonSeleccionarFicha.gameObject.SetActive(true);
+            transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaComprada();
+        } 
     }
 
-    private IEnumerator seleccionObjeto(string objetoSeleccionado)
+    private IEnumerator seleccionMapa()
     {
         WWWForm form = new WWWForm();
         string user = username.text;
         form.AddField("username", user);
-
+    
         //Compruebo que objeto he seleccionado
-        if (objetoSeleccionado == "mapa"){
-            form.AddField("seleccionadoMapa","true");
-        }
-        else{
-            //Ver el formato de los mensajes
-            form.AddField("seleccionadoFicha","true");    
-        }
+        form.AddField("mapa","1");
+        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/store/selectMapa", form);
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setmapaSeleccionado(true);
+        Debug.Log("Enviado seleccionado mapa");
+        yield return req.Send();
+    }
 
-        //Envio el mensaje y no recibo nada
-        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/tienda", form);
-        yield return null;
+     private IEnumerator seleccionFicha()
+    {
+        WWWForm form = new WWWForm();
+        string user = username.text;
+        form.AddField("username", user);
+    
+        //Ver el formato de los mensajes
+        form.AddField("fichas","2");    
+        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/store/selectFichas", form);
+        Debug.Log("Enviado seleccionado fichas");
+        yield return req.Send();
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaSeleccionada(true);
+
     }
 
     private IEnumerator QuitarSeleccionObjeto(string objetoSeleccionado){
@@ -181,15 +199,18 @@ public class tiendaScript : MonoBehaviour
 
         //Compruebo que objeto he seleccionado
         if (objetoSeleccionado == "mapa"){
-            form.AddField("seleccionadoMapa","false");
+            form.AddField("mapa","0");    
+            transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setmapaSeleccionado(false);
         }
         else{
             //Ver el formato de los mensajes
-            form.AddField("seleccionadoFicha","false");    
+            form.AddField("fichas","0");
+            transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaSeleccionada(false);    
         }
 
         //Envio el mensaje y no recibo nada
         UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/tienda", form);
-        yield return null;
+        Debug.Log("Enviado DESseleccionado " + objetoSeleccionado);
+        yield return req.Send();
     }
 }

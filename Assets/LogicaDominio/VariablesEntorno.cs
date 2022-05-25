@@ -5,9 +5,10 @@ using UnityEngine;
 public class VariablesEntorno : MonoBehaviour
 {
     //Script que introduce las variables de entorno que se necesitaran
-    public string myUsername; 
+    public string myUsername = "jesus"; 
     public bool estoyEnPartida,mapaComprado,mapaSeleccionado,fichaComprada,fichaSeleccionada;
-    
+
+
     public void setUsername(string username)
     {
         myUsername = username;

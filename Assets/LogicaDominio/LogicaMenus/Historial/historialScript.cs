@@ -39,6 +39,19 @@ public class historialScript : MonoBehaviour
 
     private void irHome()
     {
+        //Pido los datos al servidor sobre el usuario
+        /*WWWForm form = new WWWForm();
+        string user = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().myUsername;
+        form.AddField("username", user);
+        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/login/items", form);
+
+        yield return req.Send();
+        
+        
+        */
+
+
+
         sm.switchScreens(this.name, "Home");
     }
 

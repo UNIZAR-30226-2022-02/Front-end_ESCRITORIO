@@ -49,11 +49,11 @@ public class screenManager : MonoBehaviour
 
             if(a.name == to)
             {
+                
                 a.SetActive(true);
                 toEnabled = true;
             }
-        }
-
+        }     
         
     }
 
