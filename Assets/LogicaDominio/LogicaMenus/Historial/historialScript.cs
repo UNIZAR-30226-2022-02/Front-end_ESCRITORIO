@@ -7,17 +7,14 @@ using UnityEngine.UI;
 public class historialScript : MonoBehaviour
 {
     public Button botonBack;
-
-
+    public Text username;
     private screenManager sm;
     
-    //private List<Resultados> historial;
-
     void Start()
     {
         //Recupero los datos del servidor
         /*UnityWebRequest respuesta = UnityWebRequest.Get("http://www.myserver.com/foo.txt");
-
+        username.text = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().myUsername;
         //Hago desaparecer las 6 - numPartidas ultimas partidas (si num partidas < 5)
         if(respuesta.numPartidas < 5){
             for (int i = respuesta.numPartidas; i < 5; i++){
@@ -37,8 +34,6 @@ public class historialScript : MonoBehaviour
         */
         botonBack.onClick.AddListener(irHome);
         sm = transform.parent.parent.GetComponent<screenManager>();
-        
-        //TODO: Recibir numPartidas e info de cada jugador de cada partida
 
     }
 

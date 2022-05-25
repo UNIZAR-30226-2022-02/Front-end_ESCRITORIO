@@ -14,14 +14,13 @@ public class homeScript : MonoBehaviour
     public Text username,errorBuscarPartida, errorUnirsePartida, errorEstoyEnPartida;
     public InputField codigoPartida;
     public Dropdown tipoSincronizacion, tipoPrivacidad, numJugadoresCrear, numJugadoresBuscar;
-    public GameObject BordeCrearPartida;
-
+    public GameObject BordeCrearPartida,BordeEsperarJugadores;
     private screenManager sm;
     // Start is called before the first frame update
     void Start()
     {
         username.text = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().myUsername;
-  
+
         //CUANDO ENTRE TENGO QUE VER SI ESTOY EN ALGUNA PARTIDA, SI ESTOY PEDIR LA LISTA DE JUGADAS Y METERLAS A LA COLA
 
         //Pedir datos tipo de mapa, tipo de ficha
@@ -140,6 +139,9 @@ public class homeScript : MonoBehaviour
 
         if(req.error != null){
             StartCoroutine(MostrarError("errorBuscar"));
+        }
+        else{
+            BordeEsperarJugadores.gameObject.SetActive(true);
         }
     }
 

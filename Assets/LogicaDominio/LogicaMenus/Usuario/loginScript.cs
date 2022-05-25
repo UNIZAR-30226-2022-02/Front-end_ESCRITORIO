@@ -38,6 +38,7 @@ public class loginScript : MonoBehaviour
     
     yield return req.Send();
     
+    //Se ha logueado correctamente
     if (req.error == null)
     {
       String res = req.downloadHandler.text;
@@ -49,6 +50,8 @@ public class loginScript : MonoBehaviour
         WebSocketHandler wsHandler = transform.parent.parent.GetComponent<WebSocketHandler>();
         wsHandler.registrarme(username);
 
+        //Guardo en el fichero de varaibles globales el nombre de usuario que se ha introducido
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setUsername(username);
         sm.switchScreens(this.name, "Home");
       }
       else
@@ -61,7 +64,6 @@ public class loginScript : MonoBehaviour
     {
       Debug.Log("Error: " + req.error);
     }
-
   }
 
   private void irRegistro()

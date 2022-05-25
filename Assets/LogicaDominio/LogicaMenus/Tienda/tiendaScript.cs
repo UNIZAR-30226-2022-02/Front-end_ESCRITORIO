@@ -13,7 +13,6 @@ public class tiendaScript : MonoBehaviour
 {
     private screenManager sm;
     public Button botonBack, botonComprarMapa, botonComprarFicha, botonSeleccionarMapa, botonSeleccionarFicha, botonDeseleccionarMapa, botonDeseleccionarFicha;
-    public bool fichaComprado, mapaComprado, fichaSeleccionado, mapaSeleccionado;
     public Text username, errorCompraMapa, errorCompraFicha;
 
     void Start()
@@ -37,18 +36,18 @@ public class tiendaScript : MonoBehaviour
         sm = transform.parent.parent.GetComponent<screenManager>();
 
         //Para inicializar la pantalla si hay algo comprado o seleccionado
-        if (fichaComprado == true){
+        if (transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().fichaComprada == true){
             ActivarComprarFicha();
-             Debug.Log ("ficha Comprada");
-            if(fichaSeleccionado == true){
+            Debug.Log ("ficha Comprada");
+            if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().fichaSeleccionada == true){
                 ActivarSeleccionarFicha();
             }
         }
 
-        if (mapaComprado == true){
+        if (transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().mapaComprado == true){
             ActivarSeleccionarMapa();
             Debug.Log ("mapa Comprado");
-            if(mapaSeleccionado == true){
+            if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().mapaSeleccionado == true){
                 ActivarSeleccionarMapa();
             }
         }
@@ -66,7 +65,7 @@ public class tiendaScript : MonoBehaviour
 
         botonComprarMapa.gameObject.SetActive(false);
         botonSeleccionarMapa.gameObject.SetActive(true);
-        mapaComprado = true;
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setMapaComprado();
     }
 
     private void ActivarSeleccionarMapa()
@@ -76,7 +75,7 @@ public class tiendaScript : MonoBehaviour
 
         botonSeleccionarMapa.gameObject.SetActive(false);
         botonDeseleccionarMapa.gameObject.SetActive(true);
-        mapaSeleccionado = true;
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setmapaSeleccionado(true);
     }
 
     private void QuitarSeleccionMapa()
@@ -86,7 +85,7 @@ public class tiendaScript : MonoBehaviour
 
         botonSeleccionarMapa.gameObject.SetActive(true);
         botonDeseleccionarMapa.gameObject.SetActive(false);
-        mapaSeleccionado = false;
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setmapaSeleccionado(false);
     }
 
     private void ActivarComprarFicha()
@@ -96,7 +95,7 @@ public class tiendaScript : MonoBehaviour
 
         botonComprarFicha.gameObject.SetActive(false);
         botonSeleccionarFicha.gameObject.SetActive(true);
-        fichaComprado = true;
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaComprada();
     }
 
     private void ActivarSeleccionarFicha()
@@ -106,7 +105,7 @@ public class tiendaScript : MonoBehaviour
 
         botonSeleccionarFicha.gameObject.SetActive(false);
         botonDeseleccionarFicha.gameObject.SetActive(true);
-        fichaSeleccionado = true;
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaSeleccionada(true);
     }
 
     private void QuitarSeleccionFicha()
@@ -116,7 +115,7 @@ public class tiendaScript : MonoBehaviour
 
         botonSeleccionarFicha.gameObject.SetActive(true);
         botonDeseleccionarFicha.gameObject.SetActive(false);
-        fichaSeleccionado = false;
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaSeleccionada(false);
     }
 
     private IEnumerator compraObjeto(string objetoComprado)
