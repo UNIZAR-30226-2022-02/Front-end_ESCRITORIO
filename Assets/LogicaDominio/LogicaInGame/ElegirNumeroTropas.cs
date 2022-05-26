@@ -69,6 +69,22 @@ public class ElegirNumeroTropas : MonoBehaviour
         slider.maxValue = nDados;
     }
 
+    public void mostrarDefender(Territorio tOrig, Territorio tDest, Jugador j){
+        this.gameObject.SetActive(true);
+
+        jugador = j;
+        terrOrig = tOrig;
+        terrDest = tDest;
+
+        accion = Accion.defender;
+        prompt.text = "Elige el numero de tropas con las que quieres defender...";
+
+        int nDados= Mathf.Min(tDest.getNumTropas(), 2);
+        slider.maxValue = nDados;
+    }
+
+
+
     // =====================================0
 
     void Start()
@@ -117,17 +133,20 @@ public class ElegirNumeroTropas : MonoBehaviour
 
                 }
                 else{
-                    int[]dadosAtaque = tirarDados((int) slider.value);
+                    int[] dadosAtaque = tirarDados((int) slider.value);
                     
                     int nDadosDef = Mathf.Min(2, terrDest.getNumTropas());
-                    int[] dadosDefensa = tirarDados(nDadosDef);
+                    int[] dadosDef = tirarDados(nDadosDef);
 
-                    j = new JugadaAtaqueAsincrono(jugador.id, myGame.idPartida, terrOrig.id, terrDest.id, dadosAtaque, dadosDefensa);
+                    j = new JugadaAtaqueAsincrono(jugador.id, myGame.idPartida, terrOrig.id, terrDest.id, dadosAtaque, dadosDef);
                 }
                 wsHandler.notificaJugada(j);
                 break;
 
             case Accion.defender:
+                int[] dadosDefensa = tirarDados((int) slider.value);
+                j = new JugadaDefensaSincrona(jugador.id, myGame.idPartida, terrOrig.id, terrDest.id, dadosDefensa);
+                wsHandler.notificaJugada(j);
                 break;
 
         }

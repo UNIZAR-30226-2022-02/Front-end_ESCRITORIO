@@ -10,6 +10,8 @@ public class Partida : MonoBehaviour
     WebSocketHandler wsHandler;
     ColaJugadas jugadas;
     VariablesEntorno entorno;
+    ElegirNumeroTropas popUpNumTropas;
+
     public Dado[] dadosAtaque;
     public Dado[] dadosDefensa;
 
@@ -73,6 +75,7 @@ public class Partida : MonoBehaviour
         wsHandler = this.transform.parent.gameObject.GetComponent<WebSocketHandler>();
         jugadas = this.transform.parent.gameObject.GetComponent<ColaJugadas>();
         entorno =  this.transform.parent.gameObject.GetComponent<VariablesEntorno>();
+        popUpNumTropas = this.transform.Find("PopUpNumTropas").gameObject.GetComponent<ElegirNumeroTropas>();
 
         // Info partida
         nVecesCartasUsadas = 0;
@@ -264,8 +267,8 @@ public class Partida : MonoBehaviour
             }
 
             if(atacado.getPropietario() == myId){
-                // TODO: Mostrar popup defensa
                 StartCoroutine(ShowError("Estas siendo atacado, ¡Defiendete!", 5));
+                popUpNumTropas.mostrarDefender(atacante, atacado, jugadores[myId]);
             }
         }
     }
