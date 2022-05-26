@@ -23,6 +23,7 @@ public class WebSocketHandler : MonoBehaviour
 
     public void notificaJugada(Jugada j){
         Debug.Log("WebSocketHandler: Enviando jugada... " + j);
+        
         string json = JsonUtility.ToJson(j);
         socket.Emit("nueva_jugada", new JSONObject(json));
     }

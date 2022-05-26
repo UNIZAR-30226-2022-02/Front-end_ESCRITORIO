@@ -51,7 +51,7 @@ public class ColaJugadas : MonoBehaviour
             "ukraine", "southern_europe", "western_europe", "northern_europe"
         };
 
-        myQueue.Enqueue(new JugadaCrearPartida(-1, 0, new string[]{"jesus", "juan", "sergio"}, true));
+        myQueue.Enqueue(new JugadaCrearPartida(-1, 0, new string[]{"jesus", "juan", "sergio"}, false));
 
         int i=0;
         foreach(string pais in paises){

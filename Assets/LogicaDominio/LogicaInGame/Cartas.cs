@@ -22,7 +22,7 @@ namespace LogicaInGame.Cartas
         }
 
         public static int pedirCartaAleatoria(){
-            int res = Random.Range(0, 3);
+            int res = Random.Range(0, 2);
             return res;
         }
 

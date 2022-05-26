@@ -32,29 +32,41 @@ public class ElegirNumeroTropas : MonoBehaviour
     // - Metodos Publicos -
     // ====================
     public void mostrarPonerTropas(Territorio t, Jugador j){
-        accion = Accion.poner;
+        this.gameObject.SetActive(true);
+
         jugador = j;
         terrDest = t;
 
+        accion = Accion.poner;
         prompt.text = "Elige el numero de tropas que quieres colocar...";
         slider.maxValue = j.getNTropasSinColocar();
-
-        this.gameObject.SetActive(true);
     }
 
     public void mostrarMoverTropas(Territorio tOrig, Territorio tDest, Jugador j){
-        accion = Accion.mover;
+        this.gameObject.SetActive(true);
+
         jugador = j;
         terrOrig = tOrig;
         terrDest = tDest;
 
+        accion = Accion.mover;
         prompt.text = "Elige el numero de tropas que quieres mover...";
+        Debug.Log("ElegirNumTropas: TOrig=" + tOrig);
         slider.maxValue = tOrig.getNumTropas()-1;
-
-        this.gameObject.SetActive(true);
     }
 
-    public void mostrarAtacar(Territorio t, Jugador j){
+    public void mostrarAtacar(Territorio tOrig, Territorio tDest, Jugador j){
+        this.gameObject.SetActive(true);
+
+        jugador = j;
+        terrOrig = tOrig;
+        terrDest = tDest;
+
+        accion = Accion.atacar;
+        prompt.text = "Elige el numero de tropas con las que quieres atacar...";
+
+        int nDados= Mathf.Min(tOrig.getNumTropas()-1, 3);
+        slider.maxValue = nDados;
     }
 
     // =====================================0
@@ -67,11 +79,6 @@ public class ElegirNumeroTropas : MonoBehaviour
         botonCerrar.onClick.AddListener(cerrarVentana);
         botonConfirmar.onClick.AddListener(realizaJugada);
         slider.onValueChanged.AddListener(delegate {actualizaValor();});
-
-        accion = Accion.nula;
-        jugador = null;
-        terrOrig = null;
-        terrDest = null;
 
         slider.minValue = 1;
 
@@ -88,6 +95,7 @@ public class ElegirNumeroTropas : MonoBehaviour
     }
 
     private void realizaJugada(){
+        Debug.Log("PopUpNumTropas boton pulsado..., accion = " + accion);
         switch (accion){
             case Accion.poner:
                 Jugada j = new JugadaPonerTropas(jugador.id, myGame.idPartida, terrDest.id, (int) slider.value);
@@ -103,7 +111,22 @@ public class ElegirNumeroTropas : MonoBehaviour
                 break;
 
             case Accion.atacar:
+                if(myGame.partidaSincrona){
+                    int[] dadosAtaque = tirarDados((int) slider.value);
+                    j = new JugadaAtaqueSincrono(jugador.id, myGame.idPartida, terrOrig.id, terrDest.id, dadosAtaque);
+
+                }
+                else{
+                    int[]dadosAtaque = tirarDados((int) slider.value);
+                    
+                    int nDadosDef = Mathf.Min(2, terrDest.getNumTropas());
+                    int[] dadosDefensa = tirarDados(nDadosDef);
+
+                    j = new JugadaAtaqueAsincrono(jugador.id, myGame.idPartida, terrOrig.id, terrDest.id, dadosAtaque, dadosDefensa);
+                }
+                wsHandler.notificaJugada(j);
                 break;
+
             case Accion.defender:
                 break;
 
@@ -112,5 +135,13 @@ public class ElegirNumeroTropas : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
+    private int[] tirarDados(int nDados){
+        int[] res = new int[nDados];
+
+        for(int i=0; i<nDados; i++){
+            res[i] = Random.Range(1,6);
+        }
+        return res;
+    }
     
 }

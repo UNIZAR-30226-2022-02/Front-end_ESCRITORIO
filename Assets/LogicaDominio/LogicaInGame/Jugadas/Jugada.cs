@@ -54,6 +54,9 @@ namespace LogicaInGame.Jugadas
                 case "defensaSincrona":
                     result = JsonUtility.FromJson<JugadaDefensaSincrona>(json);
                     break;
+                case "ataqueAsincrono":
+                    result = JsonUtility.FromJson<JugadaAtaqueAsincrono>(json);
+                    break;
                 case "pedirCarta":
                     result = JsonUtility.FromJson<JugadaPedirCarta>(json);
                     break;
@@ -121,9 +124,9 @@ namespace LogicaInGame.Jugadas
 
     public class JugadaMoverTropas : Jugada
     {
-        public string idTerritorioOrigen { get; set; }
-        public string idTerritorioDestino { get; set; }
-        public int numTropas { get; set; } 
+        public string idTerritorioOrigen;
+        public string idTerritorioDestino;
+        public int numTropas; 
 
         public JugadaMoverTropas(int userId, int idPartida, string idTerritorioOrigen, string idTerritorioDestino, int numTropas)
         : base("moverTropas", userId, idPartida)
