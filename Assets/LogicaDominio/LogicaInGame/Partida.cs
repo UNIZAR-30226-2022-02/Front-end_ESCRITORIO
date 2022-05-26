@@ -292,26 +292,6 @@ public class Partida : MonoBehaviour
         }
         
         decidirBatalla(ataque.resultadoDadosAtaque, j.resultadoDadosDefensa, ataque.territorioAtacante, ataque.territorioAtacado);
-
-        // Verifico que exista un ataque
-        if(ultJugada.type!="ataqueSincrono"){
-            Debug.Log("Error en defensaSincriona: La anterior jugada no es un ataque, es: " + j.type);
-            return;
-        }
-        JugadaAtaqueSincrono ataque = (JugadaAtaqueSincrono) ultJugada;
-        
-        if(ataque.territorioAtacante != j.territorioAtacante || ataque.territorioAtacado != j.territorioAtacado){
-            Debug.Log("Error en defensaSincriona: Los territorios del ataque y la defensa no coinciden.");
-            return;
-        }
-
-        Territorio atacado =  territorios.Find(aux => aux.id == j.territorioAtacado);
-        if(atacado.getPropietario() != j.userId){
-            Debug.Log("Error en defensaSincriona: El jugador no es propietario del territorio atacado.");
-            return;
-        }
-
-        decidirBatalla(ataque.resultadoDadosAtaque, j.resultadoDadosDefensa, ataque.territorioAtacante, ataque.territorioAtacado);
     }
 
     private void ataqueAsincrono(JugadaAtaqueAsincrono j){
