@@ -18770,6 +18770,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed8c720f0bf3db64881e04dcdb2c697f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dadosAtaque:
+  - {fileID: 944128993}
+  - {fileID: 1002298465}
+  - {fileID: 1307268695}
+  dadosDefensa:
+  - {fileID: 1272007248}
+  - {fileID: 69695071}
   jugadores:
   - {fileID: 1385344624}
   - {fileID: 849859285}
