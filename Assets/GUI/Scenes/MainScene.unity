@@ -2189,6 +2189,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: irkutsk
+  continente: asia
   TerrColindantes:
   - {fileID: 1534352392}
   - {fileID: 905340272}
@@ -2616,6 +2617,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: congo
+  continente: africa
   TerrColindantes:
   - {fileID: 1016487414}
   - {fileID: 551565310}
@@ -3011,6 +3013,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: iceland
+  continente: europa
   TerrColindantes:
   - {fileID: 285456715}
   - {fileID: 271540637}
@@ -4000,6 +4003,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: ural
+  continente: asia
   TerrColindantes:
   - {fileID: 996455300}
   - {fileID: 1704301171}
@@ -5046,6 +5050,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: western_europe
+  continente: europa
   TerrColindantes:
   - {fileID: 271540637}
   - {fileID: 1093130404}
@@ -5819,6 +5824,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: egypt
+  continente: africa
   TerrColindantes:
   - {fileID: 1016487414}
   - {fileID: 551565310}
@@ -5970,6 +5976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: great_britain
+  continente: europa
   TerrColindantes:
   - {fileID: 105300311}
   - {fileID: 242240633}
@@ -6393,6 +6400,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: greenland
+  continente: norteamerica
   TerrColindantes:
   - {fileID: 1338204463}
   - {fileID: 1931561298}
@@ -6861,6 +6869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: kamchatka
+  continente: asia
   TerrColindantes:
   - {fileID: 905340272}
   - {fileID: 89961806}
@@ -7047,6 +7056,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: china
+  continente: asia
   TerrColindantes:
   - {fileID: 1704301171}
   - {fileID: 188385679}
@@ -10882,6 +10892,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: central_america
+  continente: norteamerica
   TerrColindantes:
   - {fileID: 1721818915}
   - {fileID: 1492834198}
@@ -11768,6 +11779,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: east_africa
+  continente: africa
   TerrColindantes:
   - {fileID: 1016487414}
   - {fileID: 268653867}
@@ -12365,6 +12377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: scandinavia
+  continente: europa
   TerrColindantes:
   - {fileID: 105300311}
   - {fileID: 271540637}
@@ -13384,6 +13397,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: alaska
+  continente: norteamerica
   TerrColindantes:
   - {fileID: 308028834}
   - {fileID: 1338204463}
@@ -15984,6 +15998,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: madagascar
+  continente: africa
   TerrColindantes:
   - {fileID: 551565310}
   - {fileID: 1699100091}
@@ -17081,6 +17096,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: mongolia
+  continente: asia
   TerrColindantes:
   - {fileID: 1534352392}
   - {fileID: 308028834}
@@ -19012,6 +19028,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: western_australia
+  continente: oceania
   TerrColindantes:
   - {fileID: 1132640732}
   - {fileID: 2127492722}
@@ -20079,6 +20096,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: yakursk
+  continente: asia
   TerrColindantes:
   - {fileID: 1534352392}
   - {fileID: 308028834}
@@ -21997,6 +22015,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: ukraine
+  continente: europa
   TerrColindantes:
   - {fileID: 578567841}
   - {fileID: 1093130404}
@@ -22478,6 +22497,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: southern_europe
+  continente: europa
   TerrColindantes:
   - {fileID: 242240633}
   - {fileID: 1093130404}
@@ -22849,6 +22869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: north_africa
+  continente: africa
   TerrColindantes:
   - {fileID: 1681064690}
   - {fileID: 242240633}
@@ -23097,6 +23118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: alberta
+  continente: norteamerica
   TerrColindantes:
   - {fileID: 612459418}
   - {fileID: 1338204463}
@@ -23235,6 +23257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: middle_east
+  continente: asia
   TerrColindantes:
   - {fileID: 1012462581}
   - {fileID: 996455300}
@@ -24687,6 +24710,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: northern_europe
+  continente: europa
   TerrColindantes:
   - {fileID: 271540637}
   - {fileID: 242240633}
@@ -25032,6 +25056,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: japan
+  continente: asia
   TerrColindantes:
   - {fileID: 308028834}
   - {fileID: 786477679}
@@ -25495,6 +25520,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: india
+  continente: asia
   TerrColindantes:
   - {fileID: 1033401964}
   - {fileID: 1704301171}
@@ -25665,6 +25691,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: eastern_australia
+  continente: oceania
   TerrColindantes:
   - {fileID: 872622223}
   - {fileID: 1282023454}
@@ -27402,6 +27429,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: venezuela
+  continente: sudamerica
   TerrColindantes:
   - {fileID: 532320645}
   - {fileID: 1499959041}
@@ -27716,6 +27744,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: argentina
+  continente: sudamerica
   TerrColindantes:
   - {fileID: 1499959041}
   - {fileID: 1681064690}
@@ -29188,6 +29217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: new_guinea
+  continente: oceania
   TerrColindantes:
   - {fileID: 1132640732}
   - {fileID: 2127492722}
@@ -30580,6 +30610,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: northwest_territory
+  continente: norteamerica
   TerrColindantes:
   - {fileID: 612459418}
   - {fileID: 285456715}
@@ -32854,6 +32885,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: quebec
+  continente: norteamerica
   TerrColindantes:
   - {fileID: 285456715}
   - {fileID: 1931561298}
@@ -33574,6 +33606,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: eastern_united_states
+  continente: norteamerica
   TerrColindantes:
   - {fileID: 1931561298}
   - {fileID: 1441745886}
@@ -33968,6 +34001,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: peru
+  continente: sudamerica
   TerrColindantes:
   - {fileID: 1185624448}
   - {fileID: 1681064690}
@@ -34828,6 +34862,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: siberia
+  continente: asia
   TerrColindantes:
   - {fileID: 188385679}
   - {fileID: 905340272}
@@ -37985,6 +38020,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: brazil
+  continente: sudamerica
   TerrColindantes:
   - {fileID: 1185624448}
   - {fileID: 1499959041}
@@ -38244,6 +38280,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: south_africa
+  continente: africa
   TerrColindantes:
   - {fileID: 551565310}
   - {fileID: 98626789}
@@ -38492,6 +38529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: afghanistan
+  continente: asia
   TerrColindantes:
   - {fileID: 1033401964}
   - {fileID: 188385679}
@@ -38826,6 +38864,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: western_united_states
+  continente: norteamerica
   TerrColindantes:
   - {fileID: 1026710039}
   - {fileID: 1931561298}
@@ -40717,6 +40756,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: siam
+  continente: asia
   TerrColindantes:
   - {fileID: 309711757}
   - {fileID: 1131256916}
@@ -43555,6 +43595,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: ontario
+  continente: norteamerica
   TerrColindantes:
   - {fileID: 1338204463}
   - {fileID: 285456715}
@@ -46113,6 +46154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: indonesia
+  continente: oceania
   TerrColindantes:
   - {fileID: 872622223}
   - {fileID: 1282023454}

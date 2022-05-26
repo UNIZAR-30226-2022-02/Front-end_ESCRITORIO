@@ -28,9 +28,18 @@ public class Jugador : MonoBehaviour
     // ====================
 
     public void anadirTropasTurno(){
-        //TODO: anadir las tropas en funcion de los territorios
-        setNTropasSinColocar(10); // DEBUG!
+        // Num territorios
+        List<Territorio> misTerr = myGame.territorios.FindAll( aux => aux.getPropietario() == this.id);
+        int nTerritorios = misTerr.Count;
+
+
+        // Continentes
+        int valContinentes = getTropasPorContinente(misTerr);
+
+        int numTropas = Mathf.Max((nTerritorios/3) + valContinentes, 3);
+        setNTropasSinColocar(numTropas);
     }
+
     public void setNTropasSinColocar(int nTropas){
         nTropasSinColocar = nTropas;
         nTropasText.text = nTropas.ToString();
@@ -101,6 +110,37 @@ public class Jugador : MonoBehaviour
                 break;
         }
         
+    }
+
+    private int getTropasPorContinente(List<Territorio> misTerr){
+        int total = 0;
+        List<Territorio> asia = myGame.territorios.FindAll( aux => aux.continente == "asia");
+        List<Territorio> europa = myGame.territorios.FindAll( aux => aux.continente == "europa");
+        List<Territorio> africa = myGame.territorios.FindAll( aux => aux.continente == "africa");
+        List<Territorio> oceania = myGame.territorios.FindAll( aux => aux.continente == "oceania");
+        List<Territorio> sudAmerica = myGame.territorios.FindAll( aux => aux.continente == "sudamerica");
+        List<Territorio> norteAmerica = myGame.territorios.FindAll( aux => aux.continente == "norteamerica");
+
+        if(asia.TrueForAll( aux => misTerr.Contains(aux))){
+            total += 7;
+        }
+        if(europa.TrueForAll( aux => misTerr.Contains(aux))){
+            total += 5;
+        }
+        if(africa.TrueForAll( aux => misTerr.Contains(aux))){
+            total += 3;
+        }
+        if(oceania.TrueForAll( aux => misTerr.Contains(aux))){
+            total += 2;
+        }
+        if(sudAmerica.TrueForAll( aux => misTerr.Contains(aux))){
+            total += 2;
+        }
+        if(norteAmerica.TrueForAll( aux => misTerr.Contains(aux))){
+            total += 5;
+        }
+
+        return total;
     }
 
     // GUI

@@ -9,6 +9,7 @@ public class Territorio : MonoBehaviour
 {
     // Info pais
     public string id;
+    public string continente;
     public List<Territorio> TerrColindantes;
     
     // Info propietario
