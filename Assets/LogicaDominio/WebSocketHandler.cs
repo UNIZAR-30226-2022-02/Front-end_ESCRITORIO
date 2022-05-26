@@ -9,6 +9,7 @@ public class WebSocketHandler : MonoBehaviour
 {
     private SocketIOComponent socket;
     private ColaJugadas colaJugadas;
+    private Partida game;
 
     // ====================
     // - Metodos publicos -
@@ -30,7 +31,6 @@ public class WebSocketHandler : MonoBehaviour
     // ==========================================================
     void Start()
     {
-
         colaJugadas = this.GetComponent<ColaJugadas>();
 
         GameObject go = GameObject.Find("SocketIO");
@@ -41,10 +41,11 @@ public class WebSocketHandler : MonoBehaviour
     }
 
     private void nuevaJugada(SocketIOEvent e){
+        Debug.Log("WebSocketHandler: Encolando nueva jugada...");
+        
         string json = e.data.ToString();
         Jugada j = Jugada.parseJsonJugada(json);        
 
-        Debug.Log("WebSocketHandler: Encolando nueva jugada...");
         colaJugadas.nuevaJugada(j);
     }
 

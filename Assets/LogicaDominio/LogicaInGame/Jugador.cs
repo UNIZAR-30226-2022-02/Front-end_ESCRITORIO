@@ -29,6 +29,7 @@ public class Jugador : MonoBehaviour
 
     public void anadirTropasTurno(){
         //TODO: anadir las tropas en funcion de los territorios
+        setNTropasSinColocar(10); // DEBUG!
     }
     public void setNTropasSinColocar(int nTropas){
         nTropasSinColocar = nTropas;
@@ -45,6 +46,7 @@ public class Jugador : MonoBehaviour
         turno = this.transform.parent.parent.Find("Turno").gameObject.GetComponent<Turno>();
 
         // Obtiene Texts
+
         usernameText = (Text) this.transform.Find("InfoJugador").Find("username").gameObject.GetComponent("Text");
         nTropasText = (Text) this.transform.Find("InfoJugador").Find("numTropas").gameObject.GetComponent("Text");
         infoJugador = (Image) this.transform.Find("InfoJugador").gameObject.GetComponent("Image");
@@ -54,7 +56,7 @@ public class Jugador : MonoBehaviour
         haConquistado = false;
 
         // GUI
-        this.GetComponent<Image>().color = myColor;
+        infoJugador.color = myColor;
         ultTurno = -1;
     }
 
@@ -105,15 +107,16 @@ public class Jugador : MonoBehaviour
 
     private void setColor(int turnoActual){
         if(myGame.jugadoresEliminados.Contains(turnoActual)){
-            infoJugador.color = new Color32(195,80,80,125);
+            
+            this.GetComponent<Image>().color = new Color32(128,0,3,255);
             return;
         }
 
         if(turnoActual == this.id){
-            infoJugador.color = new Color32(109,204,99,255);
+            this.GetComponent<Image>().color = new Color32(32,192,0,255);
         }
         else{
-            infoJugador.color = new Color32(192,192,192,255);
+            this.GetComponent<Image>().color = new Color32(192,192,192,255);
         }
     }
 }
