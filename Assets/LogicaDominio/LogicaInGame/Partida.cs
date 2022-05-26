@@ -10,6 +10,8 @@ public class Partida : MonoBehaviour
     WebSocketHandler wsHandler;
     ColaJugadas jugadas;
     VariablesEntorno entorno;
+    public Dado[] dadosAtaque;
+    public Dado[] dadosDefensa;
 
     // Info Partida
     public int idPartida {get; set;}
@@ -204,9 +206,13 @@ public class Partida : MonoBehaviour
 
     
     private void moverTropas(JugadaMoverTropas j){
+        Debug.Log("Moviendo tropas... Jugada: " + j.ToString());
+
         if(turno.checkTurno(j)){
             Territorio tOrig = territorios.Find(aux => aux.id == j.idTerritorioOrigen);
             Territorio tDest = territorios.Find(aux => aux.id == j.idTerritorioDestino);
+            Debug.Log("moverTropas: tOrig = " + tOrig);
+            Debug.Log("moverTropas: tDest = " + tDest);
             Jugador pl =  jugadores[j.userId];
 
             if (tOrig.getPropietario()!=j.userId){
@@ -243,8 +249,6 @@ public class Partida : MonoBehaviour
         if (turno.checkTurno(j)){
             Territorio atacante =  territorios.Find(aux => aux.id == j.territorioAtacante);
             Territorio atacado =  territorios.Find(aux => aux.id == j.territorioAtacado);
-            Debug.Log("Atacante: " + atacante);
-            Debug.Log("Atacado: " + atacado);
 
             if(atacante.getPropietario() != j.userId){
                 Debug.Log("Error en ataqueSincrono: El jugador no es propietario del territorio atacante.");
@@ -268,6 +272,26 @@ public class Partida : MonoBehaviour
 
     private void defensaSincrona(JugadaDefensaSincrona j){
         Debug.Log("Comienza defensa sincrona... Jugada: " + j.ToString());
+
+        // Verifico que exista un ataque
+        if(ultJugada.type!="ataqueSincrono"){
+            Debug.Log("Error en defensaSincriona: La anterior jugada no es un ataque, es: " + j.type);
+            return;
+        }
+        JugadaAtaqueSincrono ataque = (JugadaAtaqueSincrono) ultJugada;
+        
+        if(ataque.territorioAtacante != j.territorioAtacante || ataque.territorioAtacado != j.territorioAtacado){
+            Debug.Log("Error en defensaSincriona: Los territorios del ataque y la defensa no coinciden.");
+            return;
+        }
+
+        Territorio atacado =  territorios.Find(aux => aux.id == j.territorioAtacado);
+        if(atacado.getPropietario() != j.userId){
+            Debug.Log("Error en defensaSincriona: El jugador no es propietario del territorio atacado.");
+            return;
+        }
+        
+        decidirBatalla(ataque.resultadoDadosAtaque, j.resultadoDadosDefensa, ataque.territorioAtacante, ataque.territorioAtacado);
 
         // Verifico que exista un ataque
         if(ultJugada.type!="ataqueSincrono"){
@@ -326,6 +350,16 @@ public class Partida : MonoBehaviour
     // Funciones auxiliares
     private void decidirBatalla(int[] resAtaque, int[] resDefensa, string idTerrAtaque, string idTerrDefensa){
         Debug.Log("Decidiendo batalla...");
+
+        // Muestra dados tirados
+        int j = 0;
+        foreach(int val in resAtaque){
+            dadosAtaque[j++].mostrarTirada(val);
+        }
+        j = 0;
+        foreach(int val in resDefensa){
+            dadosAtaque[j++].mostrarTirada(val);
+        }
         
         int[] atqAux = resAtaque;
         int[] defAux = resDefensa;

@@ -24,7 +24,6 @@ public class Territorio : MonoBehaviour
 
     // GUI
     private Text numTropasText;
-    private GameObject popUpElegirNumTropas;
     private Vector3 tamPeq, tamGrand;
     private SpriteRenderer sprite;
 
@@ -107,7 +106,8 @@ public class Territorio : MonoBehaviour
     // Si es posible realizar una jugada almacena el tipo en accionActual
     // para que OnClick() la realize sin necesidad de volver a verificar todo.
     void OnMouseEnter(){ 
-        if(turno.getTurnoActual() != myGame.myId ){
+        if(turno.getTurnoActual() != myGame.myId || popUpNumTropas.gameObject.active){
+            accionActual = Acciones.nula;
             return;
         }
 
@@ -217,7 +217,6 @@ public class Territorio : MonoBehaviour
             
             // Distribucion
             case Acciones.ponerEnMioN:
-                // obtener (y validar) numTropas
                 popUpNumTropas.mostrarPonerTropas(this, myGame.jugadores[myGame.myId]);
                 break;
 
@@ -227,14 +226,13 @@ public class Territorio : MonoBehaviour
                 myGame.attackingFrom = this;
                 break;
             case Acciones.setTerritorioAtacado:
-                
+                popUpNumTropas.mostrarAtacar(myGame.attackingFrom, this, myGame.jugadores[myGame.myId]);
                 myGame.attackingFrom = null;
                 break;
 
             // Fortificacion
             case Acciones.setOrigenMover:
                 StartCoroutine(myGame.ShowError("Moviendo desde " + this.id +"!", 3));
-
                 myGame.movingFrom = this;
                 break;
             case Acciones.unSetOrigenMover:
@@ -242,6 +240,8 @@ public class Territorio : MonoBehaviour
                 break;
             case Acciones.setDestinoMover:
                 // obtener (y validar) numTropas + reset secuencia mover
+                popUpNumTropas.mostrarMoverTropas(myGame.movingFrom, this, myGame.jugadores[myGame.myId]);
+                myGame.movingFrom = null;
                 break;
         }
 
