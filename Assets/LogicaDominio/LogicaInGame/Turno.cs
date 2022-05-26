@@ -30,6 +30,9 @@ public class Turno : MonoBehaviour
         }
         while(myGame.jugadoresEliminados.Contains(turnoActual));
 
+        faseTurno = 0;
+        actualizaFaseGUI();
+
         if (!faseInicial){
             myGame.jugadores[turnoActual].anadirTropasTurno();
         }

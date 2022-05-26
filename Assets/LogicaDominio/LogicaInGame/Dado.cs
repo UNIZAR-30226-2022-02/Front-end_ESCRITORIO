@@ -14,7 +14,9 @@ public class Dado : MonoBehaviour
         ultValor = 0;
 
         int i = 0;
+        caras = new GameObject[6];
         foreach(Transform cara in this.transform){
+            Debug.Log(cara);
             caras[i++] = cara.gameObject;
         }
     }
@@ -32,14 +34,14 @@ public class Dado : MonoBehaviour
                 valor = valorFinal;
             }
             
-            Debug.Log(this.gameObject.name + ": ultvalor=" + ultValor);
             caras[ultValor].SetActive(false);
             caras[valor].SetActive(true);
             ultValor = valor;
             // Pause before next itteration
             yield return new WaitForSeconds(0.05f);
         }
-        yield return new WaitForSeconds(6);
+        yield return new WaitForSeconds(3);
+        caras[ultValor].SetActive(false);
     }
 
 }

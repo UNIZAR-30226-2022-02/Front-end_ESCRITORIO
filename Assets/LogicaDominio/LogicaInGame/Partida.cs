@@ -36,7 +36,7 @@ public class Partida : MonoBehaviour
     // Variables temporales
     public Territorio attackingFrom {get; set;} // Solo tiene valor en la fase de ataque del turno
     public Territorio movingFrom {get; set;} // Solo tiene valor en la fase de ataque del turno
-
+    
     private Jugada ultJugada;
 
     // GUI
@@ -340,7 +340,7 @@ public class Partida : MonoBehaviour
         }
         j = 0;
         foreach(int val in resDefensa){
-            dadosAtaque[j++].mostrarTirada(val);
+            dadosDefensa[j++].mostrarTirada(val);
         }
         
         int[] atqAux = resAtaque;
@@ -393,6 +393,5 @@ public class Partida : MonoBehaviour
             }
         }
     }
-
 }
 

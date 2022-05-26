@@ -131,7 +131,7 @@ public class ElegirNumeroTropas : MonoBehaviour
                 break;
 
         }
-
+        
         this.gameObject.SetActive(false);
     }
 
