@@ -34,22 +34,6 @@ public class tiendaScript : MonoBehaviour
 
         sm = transform.parent.parent.GetComponent<screenManager>();
 
-        //Para inicializar la pantalla si hay algo comprado o seleccionado
-       /* if (transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().fichaComprada == true){
-            ActivarComprarFicha();
-            Debug.Log ("ficha Comprada");
-            if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().fichaSeleccionada == true){
-                ActivarSeleccionarFicha();
-            }
-        }
-
-        if (transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().mapaComprado == true){
-            ActivarSeleccionarMapa();
-            Debug.Log ("mapa Comprado");
-            if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().mapaSeleccionado == true){
-                ActivarSeleccionarMapa();
-            }
-        }*/
     }
 
     private void irHome()
@@ -61,27 +45,19 @@ public class tiendaScript : MonoBehaviour
     private void ActivarComprarMapa()
     {
         //Empiezo corutina
-        StartCoroutine(compraObjeto("mapa"));       
+        StartCoroutine(compraObjeto("mapa"));
     }
 
     private void ActivarSeleccionarMapa()
     {
         //Empiezo corutina
         StartCoroutine(seleccionMapa());
-
-        botonSeleccionarMapa.gameObject.SetActive(false);
-        botonDeseleccionarMapa.gameObject.SetActive(true);
-        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setmapaSeleccionado(true);
     }
 
     private void QuitarSeleccionMapa()
     {
         //Empiezo corutina
         StartCoroutine(QuitarSeleccionObjeto("mapa"));
-
-        botonSeleccionarMapa.gameObject.SetActive(true);
-        botonDeseleccionarMapa.gameObject.SetActive(false);
-        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setmapaSeleccionado(false);
     }
 
     private void ActivarComprarFicha()
@@ -94,20 +70,12 @@ public class tiendaScript : MonoBehaviour
     {
         //Empiezo corutina
         StartCoroutine(seleccionFicha());
-
-        botonSeleccionarFicha.gameObject.SetActive(false);
-        botonDeseleccionarFicha.gameObject.SetActive(true);
-        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaSeleccionada(true);
     }
 
     private void QuitarSeleccionFicha()
     {
         //Empiezo corutina
         StartCoroutine(QuitarSeleccionObjeto("ficha"));
-
-        botonSeleccionarFicha.gameObject.SetActive(true);
-        botonDeseleccionarFicha.gameObject.SetActive(false);
-        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaSeleccionada(false);
     }
 
     private IEnumerator compraObjeto(string objetoComprado)
@@ -173,7 +141,8 @@ public class tiendaScript : MonoBehaviour
         form.AddField("mapa","1");
         UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/store/selectMapa", form);
         transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setmapaSeleccionado(true);
-        Debug.Log("Enviado seleccionado mapa");
+        botonSeleccionarMapa.gameObject.SetActive(false);
+        botonDeseleccionarMapa.gameObject.SetActive(true);
         yield return req.Send();
     }
 
@@ -205,6 +174,8 @@ public class tiendaScript : MonoBehaviour
         else{
             //Ver el formato de los mensajes
             form.AddField("fichas","0");
+            botonSeleccionarFicha.gameObject.SetActive(true);
+            botonDeseleccionarFicha.gameObject.SetActive(false);
             transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaSeleccionada(false);    
         }
 

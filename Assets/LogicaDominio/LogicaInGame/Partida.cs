@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class Partida : MonoBehaviour
 {    
     WebSocketHandler wsHandler;
     ColaJugadas jugadas;
+    VariablesEntorno entorno;
 
     // Info Partida
     public int idPartida {get; set;}
@@ -23,15 +25,17 @@ public class Partida : MonoBehaviour
     Turno turno;
 
     // Territorios
-    List<Territorio> territorios;
+    public List<Territorio> territorios;
 
     // Jugadores eliminados
     int nJugadoresEliminados;
     public List<int> jugadoresEliminados {get; set;}
 
     // Variables temporales
-    public Territorio attackingFrom; // Solo tiene valor en la fase de ataque del turno
-    public Territorio movingFrom; // Solo tiene valor en la fase de ataque del turno
+    public Territorio attackingFrom {get; set;} // Solo tiene valor en la fase de ataque del turno
+    public Territorio movingFrom {get; set;} // Solo tiene valor en la fase de ataque del turno
+
+    private Jugada ultJugada;
 
     // GUI
     private Text MensajeError;
@@ -64,8 +68,9 @@ public class Partida : MonoBehaviour
     
     void Start()
     {
-        wsHandler = this.transform.parent.GetComponent<WebSocketHandler>();
-        jugadas = this.transform.parent.GetComponent<ColaJugadas>();
+        wsHandler = this.transform.parent.gameObject.GetComponent<WebSocketHandler>();
+        jugadas = this.transform.parent.gameObject.GetComponent<ColaJugadas>();
+        entorno =  this.transform.parent.gameObject.GetComponent<VariablesEntorno>();
 
         // Info partida
         nVecesCartasUsadas = 0;
@@ -73,12 +78,15 @@ public class Partida : MonoBehaviour
         nJugadores = 0;
 
         turno = this.transform.Find("Turno").gameObject.GetComponent<Turno>();
-
+        
         nJugadoresEliminados = 0;
         jugadoresEliminados = new List<int>();
 
         attackingFrom = null;
         movingFrom = null;
+        ultJugada = null;
+
+        MensajeError = this.transform.Find("MensajeError").gameObject.GetComponent<Text>();
     }
 
     void Update(){
@@ -106,7 +114,6 @@ public class Partida : MonoBehaviour
             case "moverTropas":
                 moverTropas((JugadaMoverTropas) j);
                 break;
-            /*
             case "utilizarCartas":
                 utilizarCartas((JugadaUtilizarCartas) j);
                 break;
@@ -124,12 +131,12 @@ public class Partida : MonoBehaviour
                break;
             case "finPartida":
                 finPartida((JugadaFinPartida) j);
-                break;  
-            */          
+                break;        
             default:
                 Debug.Log("Error: " + j.type + " no es un tipo de jugada valida.");
                 break;
         }
+        ultJugada = j;
     }
 
     private void crearPartida( JugadaCrearPartida j){
@@ -140,14 +147,15 @@ public class Partida : MonoBehaviour
 
         // Inicializo jugadores
         nJugadores = j.listaJugadores.Length;
+        Debug.Log("nJugadores = " + nJugadores);
+        
         for (int i=0; i<nJugadores; i++){
             jugadores[i].inicializa(j.listaJugadores[i], nJugadores);
 
             //Inicializo myId
             myId = 0;  // DEBUG!
             /*
-            VariablesEntorno ve = this.transform.parent.gameObject.GetComponent<VariablesEntorno>();
-            if(j.listaJugadores[i] == ve.myUsername){
+            if(j.listaJugadores[i] == entorno.myUsername){
                 myId = i;
             }
             */
@@ -161,6 +169,8 @@ public class Partida : MonoBehaviour
     }
 
     private void finTurno(JugadaFinTurno j){
+        Debug.Log("Finalizando turno... Jugada: " + j.ToString());
+
         if(turno.checkTurno(j)){
             turno.avanzaTurno();
             attackingFrom = null;
@@ -170,10 +180,12 @@ public class Partida : MonoBehaviour
 
     
     private void ponerTropas(JugadaPonerTropas j){
+        Debug.Log("Poniendo tropas... Jugada: " + j.ToString());
+
         if(turno.checkTurno(j)){
             Territorio t = territorios.Find(aux => aux.id == j.idTerritorio);
             Jugador pl =  jugadores[j.userId];
-            if (!todosTerritoriosConquistados() || t.getPropietario()!=j.userId){
+            if (todosTerritoriosConquistados() && t.getPropietario()!=j.userId){
                 Debug.Log("Error en ponerTropas: El jugador no es propietario del territorio.");
                 return;
             } 
@@ -182,7 +194,8 @@ public class Partida : MonoBehaviour
                 return;
             } 
 
-            t.setPropietario(myId);
+            t.setPropietario(j.userId);
+
             int nuevoNumTropas = t.getNumTropas() + j.numTropas;
             t.setNumTropas(nuevoNumTropas);
             pl.setNTropasSinColocar(pl.getNTropasSinColocar()-j.numTropas);
@@ -218,30 +231,152 @@ public class Partida : MonoBehaviour
     }
 
 
-    /*
     private void utilizarCartas( JugadaUtilizarCartas j){
+        if(turno.checkTurno(j)){
 
+        }
     }
 
     private void ataqueSincrono(JugadaAtaqueSincrono j){
+        Debug.Log("Comienza ataque sincrono... Jugada: " + j.ToString());
 
+        if (turno.checkTurno(j)){
+            Territorio atacante =  territorios.Find(aux => aux.id == j.territorioAtacante);
+            Territorio atacado =  territorios.Find(aux => aux.id == j.territorioAtacado);
+            Debug.Log("Atacante: " + atacante);
+            Debug.Log("Atacado: " + atacado);
+
+            if(atacante.getPropietario() != j.userId){
+                Debug.Log("Error en ataqueSincrono: El jugador no es propietario del territorio atacante.");
+                return;
+            }
+            if(atacado.getPropietario() == j.userId){
+                Debug.Log("Error en ataqueSincrono: El jugador no puede atacar su propio territorio.");
+                return;
+            }
+            if(!atacante.TerrColindantes.Contains(atacado)){
+                Debug.Log("Error en ataqueSincrono: Los territorios deben ser colindantes.");
+                return;
+            }
+
+            if(atacado.getPropietario() == myId){
+                // TODO: Mostrar popup defensa
+                StartCoroutine(ShowError("Estas siendo atacado, ¡Defiendete!", 5));
+            }
+        }
     }
 
     private void defensaSincrona(JugadaDefensaSincrona j){
+        Debug.Log("Comienza defensa sincrona... Jugada: " + j.ToString());
 
+        // Verifico que exista un ataque
+        if(ultJugada.type!="ataqueSincrono"){
+            Debug.Log("Error en defensaSincriona: La anterior jugada no es un ataque, es: " + j.type);
+            return;
+        }
+        JugadaAtaqueSincrono ataque = (JugadaAtaqueSincrono) ultJugada;
+        
+        if(ataque.territorioAtacante != j.territorioAtacante || ataque.territorioAtacado != j.territorioAtacado){
+            Debug.Log("Error en defensaSincriona: Los territorios del ataque y la defensa no coinciden.");
+            return;
+        }
+
+        Territorio atacado =  territorios.Find(aux => aux.id == j.territorioAtacado);
+        if(atacado.getPropietario() != j.userId){
+            Debug.Log("Error en defensaSincriona: El jugador no es propietario del territorio atacado.");
+            return;
+        }
+
+        decidirBatalla(ataque.resultadoDadosAtaque, j.resultadoDadosDefensa, ataque.territorioAtacante, ataque.territorioAtacado);
     }
 
     private void ataqueAsincrono(JugadaAtaqueAsincrono j){
+        if(turno.checkTurno(j)){
+            Territorio atacante =  territorios.Find(aux => aux.id == j.territorioAtacante);
+            Territorio atacado =  territorios.Find(aux => aux.id == j.territorioAtacado);
 
+            if(atacante.getPropietario() != j.userId){
+                Debug.Log("Error en ataqueAsincrono: El jugador no es propietario del territorio atacante.");
+                return;
+            }
+            if(atacado.getPropietario() == j.userId){
+                Debug.Log("Error en ataqueAsincrono: El jugador no puede atacar su propio territorio.");
+                return;
+            }
+            if(!atacante.TerrColindantes.Contains(atacado)){
+                Debug.Log("Error en ataqueAsincrono: Los territorios deben ser colindantes.");
+                return;
+            }
+
+            decidirBatalla(j.resultadoDadosAtaque, j.resultadoDadosDefensa, j.territorioAtacante, j.territorioAtacado);
+        }
     }
     
     private void pedirCarta(JugadaPedirCarta j){
-
+        if(turno.checkTurno(j)){
+            jugadores[j.userId].cartas.addCarta(j.cartaRecibida); 
+        }
     }
 
     private void finPartida(JugadaFinPartida j){
 
-    }*/
+    }
+
+
+    // Funciones auxiliares
+    private void decidirBatalla(int[] resAtaque, int[] resDefensa, string idTerrAtaque, string idTerrDefensa){
+        Debug.Log("Decidiendo batalla...");
+        
+        int[] atqAux = resAtaque;
+        int[] defAux = resDefensa;
+        Array.Sort(atqAux); Array.Reverse(atqAux);
+        Array.Sort(defAux); Array.Reverse(defAux);
+
+        Territorio tAtq = territorios.Find(aux => aux.id == idTerrAtaque);
+        Territorio tDef = territorios.Find(aux => aux.id == idTerrDefensa);
+        int jugAtq = tAtq.getPropietario();
+        int jugDef = tDef.getPropietario();
+
+        int n = Mathf.Min(atqAux.Length, defAux.Length);
+        for(int i=0; i<n; i++){
+            if(atqAux[i] > defAux[i]){
+                // Gana atacante
+                Debug.Log("Dado " + i + ": Gana atacante!");
+
+                tDef.setNumTropas(tDef.getNumTropas()-1);
+
+                
+                if(tDef.sePuedeConquistar()){
+                    // Consigue conquistar
+                    Debug.Log("Dado " + i + ": Territorio conquistado");
+
+                    // Actualiza propietario
+                    tDef.setPropietario(jugAtq);
+
+                    // Mueve tropas
+                    tDef.setNumTropas(resAtaque.Length);
+                    tAtq.setNumTropas(tAtq.getNumTropas()-resAtaque.Length);
+
+                    // Atacante ha conquistado
+                    jugadores[jugAtq].haConquistado = true;
+
+                    // Comprueba si ha eliminado al jugador defensor
+                    if (!territorios.Exists(aux => aux.getPropietario() == jugDef)){
+                        Debug.Log("Dado " + i + ": Jugador eliminado");
+
+                        jugadoresEliminados.Add(jugDef);
+                        nJugadoresEliminados++;
+                    }
+                    break;
+                }
+            }
+            else{
+                // Gana defensor
+                Debug.Log("Dado " + i + ": Gana defensor!");
+                tAtq.setNumTropas(tAtq.getNumTropas()-1);
+            }
+        }
+    }
 
 }
 

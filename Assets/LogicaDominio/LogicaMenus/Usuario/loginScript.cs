@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 public class loginScript : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class loginScript : MonoBehaviour
   [System.Serializable]
   public class Datos{
     public int mapaSel,fichaSel, enPartida;
-    public int[] objetosComprados;
+    public List<int> objetosComprados;
   }
 
   private screenManager sm;
@@ -59,37 +60,41 @@ public class loginScript : MonoBehaviour
         //Guardo en el fichero de varaibles globales el nombre de usuario que se ha introducido
         transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setUsername(username);
 
+        //////////////////////////////////////////////////////////
         //LLamar al servidor para actualizar los datos del usuario
         WWWForm form2 = new WWWForm();
         form2.AddField("username", username);
 
         UnityWebRequest respuesta = UnityWebRequest.Post("serverrisk.herokuapp.com/login/datos", form2);
         yield return respuesta.Send();
+        Debug.Log("LLega respuesta Json");
 
-        //mapaComp, mapaSel,fichComp,fichaSele,enPartida;
         string resultado = respuesta.downloadHandler.text;
         Datos data = JsonUtility.FromJson<Datos>(resultado);
-
-        //Actualizo la variable estoyEnPartida de las variables de entorno
+        //Veo si estoy en partida y actualizo las variables de entrono
         if(data.enPartida != -1){
           transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setEstoyEnPartida(true);
         }
+        else{
+          transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setEstoyEnPartida(false);
+        }
 
         //Actualizo los objetos comprados en las variables de entorno
-        for(int i = 0; i<2; i++){
-          if(data.objetosComprados[i] == 1){
+        foreach(int objeto in data.objetosComprados){
+          if(objeto == 1){
+            Debug.Log("Mapa comprado");
             transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setMapaComprado();
           }
-          else if(data.objetosComprados[i] == 2){
+          else if(objeto == 2){
+            Debug.Log("Ficha comprada");
             transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaComprada(); 
           }
         }
-        
+
         //Actualizo la variable mapaSeleccionado de las variables de entorno
         if(data.mapaSel == 0){
           transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setmapaSeleccionado(false);
         }
-
         else{
           transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setmapaSeleccionado(true);
         }
@@ -98,14 +103,12 @@ public class loginScript : MonoBehaviour
         if(data.fichaSel == 0){
           transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaSeleccionada(false);
         }
-
         else{
           transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaSeleccionada(true);
         }
 
         sm.switchScreens(this.name, "Home");
       }
-
 
       else
       {

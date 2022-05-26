@@ -21,11 +21,19 @@ public class homeScript : MonoBehaviour
     {
         username.text = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().myUsername;
         
-        StartCoroutine(RellenarDatos());
-        
-        //CUANDO ENTRE TENGO QUE VER SI ESTOY EN ALGUNA PARTIDA, SI ESTOY PEDIR LA LISTA DE JUGADAS Y METERLAS A LA COLA
+        bool enPartida = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().estoyEnPartida;
 
-        //Pedir datos tipo de mapa, tipo de ficha
+        if(enPartida){
+            //PEDIR JUGADAS Y METERLAS A LA COLA
+            /*
+            //Desactivo 
+            List<Jugadas> jugadas...
+
+            foreach(Jugada jug in jugadas){
+                transform.parent.parent.gameObject.GetComponent<ColaJugadas>().nuevaJugada(jug);
+            }
+            */
+        }
 
         botonAtras.onClick.AddListener(quitarCrearPartida);
         botonTienda.onClick.AddListener(tienda);
@@ -35,22 +43,9 @@ public class homeScript : MonoBehaviour
         botonBuscarPartida.onClick.AddListener(buscarPartida);
         botonUnirse.onClick.AddListener(unirsePartida);
         
-
         sm = transform.parent.parent.GetComponent<screenManager>();
     }
 
-    //Corutina para rellenar los datos de las variables de entorno
-    private IEnumerator RellenarDatos()
-    {
-        WWWForm form = new WWWForm();
-        string user = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().myUsername;
-        form.AddField("username", user);
-        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/login/items", form);
-
-        yield return req.Send();
-
-        //String res = req.downloadHandler.text
-    }
     //Muestro los posibles mensajes de error del home durante dos segundos
     private IEnumerator MostrarError(string mensajeError)
     {
@@ -75,6 +70,25 @@ public class homeScript : MonoBehaviour
     //Cambio a pantalla tienda
     private void tienda()
     {
+        //Para inicializar la tienda si la ficha esta comprada o seleccionada
+        if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().fichaComprada == true){
+            transform.parent.GetChild(4).gameObject.GetComponent<tiendaScript>().botonComprarFicha.gameObject.SetActive(false);
+            transform.parent.GetChild(4).gameObject.GetComponent<tiendaScript>().botonSeleccionarFicha.gameObject.SetActive(true);
+            if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().fichaSeleccionada == true){
+                transform.parent.GetChild(4).gameObject.GetComponent<tiendaScript>().botonSeleccionarFicha.gameObject.SetActive(false);
+                transform.parent.GetChild(4).gameObject.GetComponent<tiendaScript>().botonDeseleccionarFicha.gameObject.SetActive(true);
+            }
+        }
+
+        //Para inicializar la tienda si el mappa esta comprado o seleccionado
+        if (transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().mapaComprado == true){
+            transform.parent.GetChild(4).gameObject.GetComponent<tiendaScript>().botonComprarMapa.gameObject.SetActive(false);
+            transform.parent.GetChild(4).gameObject.GetComponent<tiendaScript>().botonSeleccionarMapa.gameObject.SetActive(true);
+            if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().mapaSeleccionado == true){
+                transform.parent.GetChild(4).gameObject.GetComponent<tiendaScript>().botonSeleccionarMapa.gameObject.SetActive(false);
+                transform.parent.GetChild(4).gameObject.GetComponent<tiendaScript>().botonDeseleccionarMapa.gameObject.SetActive(true);
+            }
+        }
         sm.switchScreens(this.name, "Tienda");
     }
 
@@ -109,32 +123,34 @@ public class homeScript : MonoBehaviour
         form.AddField("username", user);
 
         string privacidad = tipoPrivacidad.captionText.text;
-        form.AddField("privacidad", privacidad);
+        form.AddField("publica", privacidad);
 
         string sincronizacion = tipoSincronizacion.captionText.text;
-        form.AddField("sincronizacion", sincronizacion);
+        form.AddField("tipo", sincronizacion);
 
         int numJugadoresCrearPartida = numJugadoresCrear.value + 2;
-        form.AddField("numJugadores",numJugadoresCrearPartida);
+        form.AddField("maxJugadores",numJugadoresCrearPartida);
 
-        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/home", form);
+        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/partida/crearPartida", form);
 
-        yield return null;
+        yield return req.Send();
+
+        BordeEsperarJugadores.gameObject.SetActive(true);
     }
 
-    //Veo si estoy en una partida, si lo estoy muestro mesnaje de error, sino llamo al servidor para
+    //Veo si estoy en una partida, si lo estoy muestro mensaje de error, sino llamo al servidor para
     //que busque una partida
     private void buscarPartida()
     {
-       /* bool estoyPartida = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().estoyEnPartida;
+        bool enPartida = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().estoyEnPartida;
         //Si estoy en partida muestro error
-        if(estoyPartida){
+        if(enPartida){
             StartCoroutine(MostrarError("estoyEnPartida"));
         }
         //Sino le envio datos al servidor para que busque una partida
         else{
             StartCoroutine(enviarDatosBuscar());
-        }  */
+        } 
     }
 
     //Envio los datos al servidor para que busque una partida
@@ -144,19 +160,25 @@ public class homeScript : MonoBehaviour
         string user = username.text;
         form.AddField("username", user);
 
+        form.AddField("publica","Publica");
+
         string numJugadores = numJugadoresBuscar.captionText.text;
         form.AddField("numJugadores", numJugadores);
 
-        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/home", form);
+        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/partida/unirPartida", form);
 
         yield return req.Send();
+        string resultado = req.downloadHandler.text;
 
         if(req.error != null){
-            StartCoroutine(MostrarError("errorBuscar"));
+            if(resultado != "OK"){
+                StartCoroutine(MostrarError("errorBuscar"));
+            }
+            else{
+                BordeEsperarJugadores.gameObject.SetActive(true);
+            }
         }
-        else{
-            BordeEsperarJugadores.gameObject.SetActive(true);
-        }
+            
     }
 
     //LLamo a una corutina para que envie al servidor los datos para unirse a una partida
@@ -173,15 +195,23 @@ public class homeScript : MonoBehaviour
         string user = username.text;
         form.AddField("username", user);
 
+        form.AddField("publica","Privada");
+
         string codigo = codigoPartida.text;
         form.AddField("codigoPartida", codigo);
 
-        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/home", form);
+        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/partida/unirPartida", form);
 
         yield return req.Send();
 
+        string resultado = req.downloadHandler.text;
         if(req.error != null){
-            StartCoroutine(MostrarError("errorUnirse"));
+            if(resultado != "OK"){
+                StartCoroutine(MostrarError("errorUnirse"));
+            }      
+        }
+        else{
+            Debug.Log("error: " + req.error);
         }
     }
 }

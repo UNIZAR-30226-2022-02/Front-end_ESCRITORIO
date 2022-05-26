@@ -11,6 +11,7 @@ public class Jugador : MonoBehaviour
 
     
     public int id;
+    public Color32 myColor;
     public string userName { get; set;}
     public Cartas cartas { get; set; }
     private int nTropasSinColocar;
@@ -25,6 +26,11 @@ public class Jugador : MonoBehaviour
     // ====================
     // - Metodos Publicos -
     // ====================
+
+    public void anadirTropasTurno(){
+        //TODO: anadir las tropas en funcion de los territorios
+        setNTropasSinColocar(10); // DEBUG!
+    }
     public void setNTropasSinColocar(int nTropas){
         nTropasSinColocar = nTropas;
         nTropasText.text = nTropas.ToString();
@@ -40,6 +46,7 @@ public class Jugador : MonoBehaviour
         turno = this.transform.parent.parent.Find("Turno").gameObject.GetComponent<Turno>();
 
         // Obtiene Texts
+
         usernameText = (Text) this.transform.Find("InfoJugador").Find("username").gameObject.GetComponent("Text");
         nTropasText = (Text) this.transform.Find("InfoJugador").Find("numTropas").gameObject.GetComponent("Text");
         infoJugador = (Image) this.transform.Find("InfoJugador").gameObject.GetComponent("Image");
@@ -48,15 +55,24 @@ public class Jugador : MonoBehaviour
         cartas = new Cartas();
         haConquistado = false;
 
+        // GUI
+        infoJugador.color = myColor;
         ultTurno = -1;
     }
 
 
     void Update(){
+        // Cambios de turno
         int turnoActual = turno.getTurnoActual();
         if( turnoActual!= ultTurno){
+            // Colores (GUI)
             setColor(turnoActual);
             ultTurno = turnoActual;
+
+            // Reset haConquistado
+            if(turnoActual == id){
+                haConquistado = false;
+            }
         }
     }
 
@@ -91,15 +107,16 @@ public class Jugador : MonoBehaviour
 
     private void setColor(int turnoActual){
         if(myGame.jugadoresEliminados.Contains(turnoActual)){
-            infoJugador.color = new Color32(195,80,80,255);
+            
+            this.GetComponent<Image>().color = new Color32(128,0,3,255);
             return;
         }
 
         if(turnoActual == this.id){
-            infoJugador.color = new Color32(109,204,99,255);
+            this.GetComponent<Image>().color = new Color32(32,192,0,255);
         }
         else{
-            infoJugador.color = new Color32(192,192,192,255);
+            this.GetComponent<Image>().color = new Color32(192,192,192,255);
         }
     }
 }

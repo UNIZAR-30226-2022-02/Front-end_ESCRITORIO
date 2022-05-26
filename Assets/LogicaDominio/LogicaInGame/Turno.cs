@@ -4,6 +4,7 @@ using UnityEngine;
 
 using LogicaInGame.Jugadas;
 
+[RequireComponent(typeof(BoxCollider2D))]
 public class Turno : MonoBehaviour
 {
     private Partida myGame;
@@ -18,7 +19,6 @@ public class Turno : MonoBehaviour
     // GUI
     private GameObject distribucion, ataque, fortificacion;
     private Vector3 tamPeq, tamGrand;
-    int ultFase;
 
     // ====================
     // - Metodos Publicos -
@@ -28,7 +28,26 @@ public class Turno : MonoBehaviour
             turnoActual++;
             turnoActual %= myGame.nJugadores;
         }
-        while( myGame.jugadoresEliminados.Contains(turnoActual));
+        while(myGame.jugadoresEliminados.Contains(turnoActual));
+
+        if (!faseInicial){
+            myGame.jugadores[turnoActual].anadirTropasTurno();
+        }
+        else{
+            // Fase inicial 
+            int totalTropas = 0;
+            foreach (Jugador j in myGame.jugadores){
+                totalTropas += j.getNTropasSinColocar();
+            }
+            
+            if(totalTropas == 0){
+                // No quedan tropas por colocar
+                Debug.Log("Turno: Fin de la fase inicial.");
+                faseInicial = false;
+                myGame.jugadores[turnoActual].anadirTropasTurno();
+            }
+            
+        }
     }
 
     public bool checkTurno(Jugada j){
@@ -36,7 +55,7 @@ public class Turno : MonoBehaviour
             return true;
         }
         else{
-            Debug.Log("Error jugada " + j + ": El usuario que realiza la jugada no es el que tiene el turno");
+            Debug.Log("Error jugada " + j.ToString() + ": El usuario que realiza la jugada no es el que tiene el turno, el turno es: "+ turnoActual);
             return false;
         }
     }
@@ -69,40 +88,20 @@ public class Turno : MonoBehaviour
         fortificacion = this.transform.Find("InfoTurno").Find("Fortificacion").Find("bloque").gameObject;
 
         tamPeq = transform.localScale;
-        tamGrand = tamPeq + new Vector3(+8.0f,+8.0f,+0.0f);
+        tamGrand = tamPeq + new Vector3(+0.1f,+0.1f,+0.0f);
 
-        ultFase = -1;
+        actualizaFaseGUI();
     }
 
     void Update(){
-        if(faseTurno != ultFase){
-            switch(faseTurno){
-                case 0:
-                    distribucion.SetActive(true);
-                    ataque.SetActive(false);
-                    fortificacion.SetActive(false);
-                    break;
-                case 1:
-                    distribucion.SetActive(true);
-                    ataque.SetActive(true);
-                    fortificacion.SetActive(false);
-                    break;
-                case 2:
-                    distribucion.SetActive(true);
-                    ataque.SetActive(true);
-                    fortificacion.SetActive(false);
-                    break;
-            }
-            ultFase = faseTurno;
-        }
     }
 
     // =========================
     // - Generacion de Jugadas -
     // =========================
 
-    void OnMouseEnter(){
-        if(turnoActual == myGame.myId){
+    void OnMouseEnter(){    
+        if(!faseInicial && turnoActual == myGame.myId){
             transform.localScale = tamGrand;
         }
     }
@@ -111,11 +110,10 @@ public class Turno : MonoBehaviour
         transform.localScale = tamPeq;        
     }
 
-    void OnMouseClick(){
+    void OnMouseDown(){
         if(turnoActual == myGame.myId){
             avanzaFaseTurno();
         }
-
     }
 
     // Funcion que pasa a la siguiente fase del ataque
@@ -128,17 +126,33 @@ public class Turno : MonoBehaviour
 
         faseTurno ++;
         faseTurno %= 3;
+        actualizaFaseGUI();
 
         // Finaliza mi turno
         if (faseTurno == 0){
             Jugada j = new JugadaFinTurno(myGame.myId, myGame.idPartida); 
-            procesaYEnvia(j);        
+            wsHandler.notificaJugada(j);        
         }
     }
 
-    private void procesaYEnvia(Jugada j){
-        colaJugadas.nuevaJugada(j);
-        wsHandler.notificaJugada(j);
-    } 
+    private void actualizaFaseGUI(){
+        switch(faseTurno){
+            case 0:
+                distribucion.SetActive(true);
+                ataque.SetActive(false);
+                fortificacion.SetActive(false);
+                break;
+            case 1:
+                distribucion.SetActive(true);
+                ataque.SetActive(true);
+                fortificacion.SetActive(false);
+                break;
+            case 2:
+                distribucion.SetActive(true);
+                ataque.SetActive(true);
+                fortificacion.SetActive(true);
+                break;
+        }
+    }
 
 }

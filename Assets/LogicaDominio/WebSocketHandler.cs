@@ -9,6 +9,7 @@ public class WebSocketHandler : MonoBehaviour
 {
     private SocketIOComponent socket;
     private ColaJugadas colaJugadas;
+    private Partida game;
 
     // ====================
     // - Metodos publicos -
@@ -21,12 +22,13 @@ public class WebSocketHandler : MonoBehaviour
     }
 
     public void notificaJugada(Jugada j){
+        Debug.Log("WebSocketHandler: Enviando jugada... " + j);
         string json = JsonUtility.ToJson(j);
         socket.Emit("nueva_jugada", new JSONObject(json));
     }
 
 
-    // Start is called before the first frame update
+    // ==========================================================
     void Start()
     {
         colaJugadas = this.GetComponent<ColaJugadas>();
@@ -35,14 +37,15 @@ public class WebSocketHandler : MonoBehaviour
 		socket = go.GetComponent<SocketIOComponent>();
         
 		socket.On("nueva_jugada", nuevaJugada);  
-        socket.On("clientes", nuevaJugada);  
+        //socket.On("clientes", nuevaJugada);  
     }
-
 
     private void nuevaJugada(SocketIOEvent e){
         Debug.Log("WebSocketHandler: Encolando nueva jugada...");
+        
         string json = e.data.ToString();
         Jugada j = Jugada.parseJsonJugada(json);        
+
         colaJugadas.nuevaJugada(j);
     }
 

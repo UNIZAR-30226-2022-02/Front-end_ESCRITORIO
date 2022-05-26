@@ -21,12 +21,13 @@ namespace LogicaInGame.Cartas
             misCartas[2] = n3;
         }
 
+        public static int pedirCartaAleatoria(){
+            int res = Random.Range(0, 3);
+            return res;
+        }
 
-        // Devuelve el tipo de la nueva carta
-        public int nuevaCarta(){
-            int tipoCarta = Random.Range(0,3);
-            misCartas[tipoCarta]++;
-            return tipoCarta;
+        public void addCarta(int tipo){
+            misCartas[tipo]++;
         }
 
         public bool puedoUsarCartas(){
@@ -58,7 +59,7 @@ namespace LogicaInGame.Cartas
             
         }
 
-        private Cartas getCardsToUse(){
+        public Cartas getCardsToUse(){
             if (misCartas[0]>=3){
                 return new Cartas(3,0,0);
             }
