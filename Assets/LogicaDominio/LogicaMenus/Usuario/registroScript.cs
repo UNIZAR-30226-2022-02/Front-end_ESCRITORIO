@@ -21,6 +21,8 @@ public class registroScript : MonoBehaviour
         botonRegistro.onClick.AddListener(registro);
         botonBack.onClick.AddListener(irLogin);
 
+        errorContrasena.gameObject.SetActive(false);
+        errorUsuario.gameObject.SetActive(false);
         sm = transform.parent.parent.GetComponent<screenManager>();
     }
 
@@ -40,33 +42,36 @@ public class registroScript : MonoBehaviour
     form.AddField("username", user);
     form.AddField("password", pass);
     form.AddField("repeatPassword",repeatPass);
-    form.AddField("mail", mail);
-    UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/registro", form);
+    form.AddField("email", mail);
+    UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/register", form);
 
     yield return req.Send();
+    if(req.error == null){
+      string res = req.downloadHandler.text;
+      if (res == "Contraseñas no coinciden")
+      {
+        //Quito el otro mensaje de error si está visible
+        errorUsuario.gameObject.SetActive(false);
+        errorContrasena.gameObject.SetActive(true);
+      }
+      else if(res == "Nombre de usuario no disponible"){
+        //Quito el otro mensaje de error si está visible
+        errorContrasena.gameObject.SetActive(false);
+        errorUsuario.gameObject.SetActive(true);
+      }
+      else{
 
-    if (req.error == "Contraseñas no coinciden")
-    {
-      //Quito el otro mensaje de error si está visible
-      errorUsuario.gameObject.SetActive(false);
-      errorContrasena.gameObject.SetActive(true);
+        //Guardo en el fichero de varaibles globales el nombre de usuario que se ha introducido
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setUsername(user);
+
+        //Si hay algun mensaje de error visible lo quito y me voy al home
+        errorContrasena.gameObject.SetActive(false);
+        errorUsuario.gameObject.SetActive(false);
+
+        sm.switchScreens(this.name, "Home");
+      }
     }
-    else if(req.error == "Nombre de usuario no disponible"){
-      //Quito el otro mensaje de error si está visible
-      errorContrasena.gameObject.SetActive(false);
-      errorUsuario.gameObject.SetActive(true);
-    }
-    else{
-
-      //Guardo en el fichero de varaibles globales el nombre de usuario que se ha introducido
-      transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setUsername(user);
-
-       //Si hay algun mensaje de error visible lo quito y me voy al home
-      errorContrasena.gameObject.SetActive(false);
-      errorUsuario.gameObject.SetActive(false);
-
-      sm.switchScreens(this.name, "home");
-    }
+    
   }
 
   private void irLogin(){

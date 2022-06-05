@@ -10,12 +10,25 @@ using UnityEngine.Networking;
 
 public class homeScript : MonoBehaviour
 {
-    public Button botonTienda, botonHistorial, botonCrearPartidaDatos,botonCrearPartidaEnviar, botonBuscarPartida, botonUnirse, botonAtras;
-    public Text username,errorBuscarPartida, errorUnirsePartida, errorEstoyEnPartida;
+    public Button botonTienda, botonHistorial, botonCrearPartidaDatos,botonCrearPartidaEnviar, botonBuscarPartida, botonUnirse, botonAtras,botonIrTablero;
+    public Text username,errorBuscarPartida, errorUnirsePartida, errorEstoyEnPartida,codigoDePartida;
     public InputField codigoPartida;
     public Dropdown tipoSincronizacion, tipoPrivacidad, numJugadoresCrear, numJugadoresBuscar;
-    public GameObject BordeCrearPartida,BordeEsperarJugadores;
+    public GameObject BordeCrearPartida,BordeEsperarJugadores,BordeMostrarCodigo;
     private screenManager sm;
+
+    [System.Serializable]
+    public class DatosCrearPrivada{
+        public string respuesta,codigo;
+        public int idPartida;
+    }
+
+    [System.Serializable]
+    public class DatosCrearPublica{
+        public string respuesta;
+        public int idPartida;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,8 +55,13 @@ public class homeScript : MonoBehaviour
         botonCrearPartidaEnviar.onClick.AddListener(enviarDatosCrearPartida);
         botonBuscarPartida.onClick.AddListener(buscarPartida);
         botonUnirse.onClick.AddListener(unirsePartida);
-        
+        botonIrTablero.onClick.AddListener(irTablero);
         sm = transform.parent.parent.GetComponent<screenManager>();
+    }
+
+    private void irTablero(){
+        BordeMostrarCodigo.gameObject.SetActive(false);
+        sm.switchScreens(this.name, "Tablero");
     }
 
     //Muestro los posibles mensajes de error del home durante dos segundos
@@ -112,6 +130,7 @@ public class homeScript : MonoBehaviour
 
     //LLamo a una corutina para enviar los datos introducidos en el pop up de crear partida 
     private void enviarDatosCrearPartida(){
+        BordeCrearPartida.gameObject.SetActive(false);
         StartCoroutine(enviarDatosCrear());
     }
 
@@ -128,14 +147,33 @@ public class homeScript : MonoBehaviour
         string sincronizacion = tipoSincronizacion.captionText.text;
         form.AddField("tipo", sincronizacion);
 
-        int numJugadoresCrearPartida = numJugadoresCrear.value + 2;
+        int numJugadoresCrearPartida = numJugadoresCrear.value + 3;
         form.AddField("maxJugadores",numJugadoresCrearPartida);
 
         UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/partida/crearPartida", form);
 
         yield return req.Send();
 
-        BordeEsperarJugadores.gameObject.SetActive(true);
+        string resultado = req.downloadHandler.text;
+        //respuesta,idPartida,codigo
+        if(privacidad == "Privada"){
+            Debug.Log("Privada");
+
+            DatosCrearPrivada data = JsonUtility.FromJson<DatosCrearPrivada>(resultado);
+
+            BordeCrearPartida.gameObject.SetActive(false);
+            //Mostrar popup con el código y boton para ir al tablero
+            BordeMostrarCodigo.gameObject.SetActive(true);
+            codigoDePartida.text = data.codigo;          
+        }
+        else if(privacidad == "Publica"){
+            Debug.Log("Publica");
+
+            DatosCrearPublica data = JsonUtility.FromJson<DatosCrearPublica>(resultado);
+
+            BordeCrearPartida.gameObject.SetActive(false);
+            sm.switchScreens(this.name, "Tablero");
+        }
     }
 
     //Veo si estoy en una partida, si lo estoy muestro mensaje de error, sino llamo al servidor para
@@ -156,6 +194,7 @@ public class homeScript : MonoBehaviour
     //Envio los datos al servidor para que busque una partida
     private IEnumerator enviarDatosBuscar()
     {
+        BordeEsperarJugadores.gameObject.SetActive(true);
         WWWForm form = new WWWForm();
         string user = username.text;
         form.AddField("username", user);
@@ -175,10 +214,10 @@ public class homeScript : MonoBehaviour
                 StartCoroutine(MostrarError("errorBuscar"));
             }
             else{
-                BordeEsperarJugadores.gameObject.SetActive(true);
+                BordeEsperarJugadores.gameObject.SetActive(false);
+                sm.switchScreens(this.name, "Tablero");
             }
-        }
-            
+        }       
     }
 
     //LLamo a una corutina para que envie al servidor los datos para unirse a una partida
@@ -209,6 +248,9 @@ public class homeScript : MonoBehaviour
             if(resultado != "OK"){
                 StartCoroutine(MostrarError("errorUnirse"));
             }      
+            else{
+                sm.switchScreens(this.name, "Tablero");
+            }
         }
         else{
             Debug.Log("error: " + req.error);

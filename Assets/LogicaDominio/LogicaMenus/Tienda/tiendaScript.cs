@@ -146,7 +146,7 @@ public class tiendaScript : MonoBehaviour
         yield return req.Send();
     }
 
-     private IEnumerator seleccionFicha()
+    private IEnumerator seleccionFicha()
     {
         WWWForm form = new WWWForm();
         string user = username.text;
@@ -157,6 +157,9 @@ public class tiendaScript : MonoBehaviour
         UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/store/selectFichas", form);
         Debug.Log("Enviado seleccionado fichas");
         yield return req.Send();
+
+        botonSeleccionarFicha.gameObject.SetActive(false);
+        botonDeseleccionarFicha.gameObject.SetActive(true);
         transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaSeleccionada(true);
 
     }
@@ -168,7 +171,9 @@ public class tiendaScript : MonoBehaviour
 
         //Compruebo que objeto he seleccionado
         if (objetoSeleccionado == "mapa"){
-            form.AddField("mapa","0");    
+            form.AddField("mapa","0");   
+            botonSeleccionarMapa.gameObject.SetActive(true);
+            botonDeseleccionarMapa.gameObject.SetActive(false); 
             transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setmapaSeleccionado(false);
         }
         else{
