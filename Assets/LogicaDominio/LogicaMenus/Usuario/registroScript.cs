@@ -62,7 +62,7 @@ public class registroScript : MonoBehaviour
       else{
 
         //Guardo en el fichero de varaibles globales el nombre de usuario que se ha introducido
-        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setUsername(user);
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().myUsername = user;
 
         //Si hay algun mensaje de error visible lo quito y me voy al home
         errorContrasena.gameObject.SetActive(false);

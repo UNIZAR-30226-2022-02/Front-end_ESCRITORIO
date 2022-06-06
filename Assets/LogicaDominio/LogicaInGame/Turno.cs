@@ -104,9 +104,17 @@ public class Turno : MonoBehaviour
     // =========================
 
     void OnMouseEnter(){    
-        if(!faseInicial && turnoActual == myGame.myId){
-            transform.localScale = tamGrand;
+        if(faseInicial){
+            return;
         }
+        if(turnoActual != myGame.myId){
+            return;
+        }
+        if(myGame.partidaSincrona && myGame.ultJugada.type=="ataqueSincrono"){
+           return;
+        }
+        
+        transform.localScale = tamGrand;
     }
 
     void OnMouseExit(){
@@ -126,6 +134,14 @@ public class Turno : MonoBehaviour
             StartCoroutine(myGame.ShowError("¡Coloca todas tus tropas antes de atacar!", 3));
             return;
         }
+
+        if(myGame.partidaSincrona && myGame.ultJugada.type=="ataqueSincrono"){
+            StartCoroutine(myGame.ShowError("¡Espera a la defensa antes de pasar turno!", 3));
+           
+           return;
+        }
+
+
 
         faseTurno ++;
         faseTurno %= 3;

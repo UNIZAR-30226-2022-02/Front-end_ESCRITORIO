@@ -5,43 +5,21 @@ using UnityEngine;
 public class VariablesEntorno : MonoBehaviour
 {
     //Script que introduce las variables de entorno que se necesitaran
-    public string myUsername; 
-    public bool estoyEnPartida,mapaComprado = false,mapaSeleccionado,fichaComprada = false,fichaSeleccionada;
-
-
-    public void setUsername(string username)
-    {
-        myUsername = username;
-    }
-
-    public void setEstoyEnPartida(bool enPartida)
-    {
-       estoyEnPartida = enPartida; 
-    }
-
-    public void setMapaComprado()
-    {
-        mapaComprado = true;
-    }
-
-    public void setmapaSeleccionado(bool seleccionMapa)
-    {
-        mapaSeleccionado = seleccionMapa;
-    }
-
-    public void setFichaComprada()
-    {
-        fichaComprada = true;
-    }
-
-    public void setFichaSeleccionada(bool seleccionFicha)
-    {
-        fichaSeleccionada = seleccionFicha;
-    }
+    public string myUsername {get; set;}
+    public bool estoyEnPartida {get; set;}
+    public bool mapaComprado {get; set;}
+    public bool mapaSeleccionado {get; set;}
+    public bool fichaComprada {get; set;}
+    public bool fichaSeleccionada  {get; set;}
     
     // Start is called before the first frame update
     void Start()
     {
+        myUsername = "user1";
         estoyEnPartida = false;
+        mapaComprado = false;
+        mapaSeleccionado = false;
+        fichaComprada = false;
+        fichaSeleccionada = false;
     }
 }

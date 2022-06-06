@@ -7,16 +7,21 @@ using LogicaInGame.Jugadas;
 public class ColaJugadas : MonoBehaviour
 {
     private Queue<Jugada> myQueue;
-    
+    private bool recuperandoEstado;
     // ====================
     // - Metodos publicos -
     // ====================
 
+    // Jugadas
+    //--------------------------------
     public void nuevaJugada(Jugada j){
         myQueue.Enqueue(j);
     }
 
     public Jugada ultimaJugada(){
+        if(myQueue.Count < 2){
+            recuperandoEstado = false;
+        }
         return myQueue.Dequeue();
     }
 
@@ -24,9 +29,23 @@ public class ColaJugadas : MonoBehaviour
         return myQueue.Count != 0;
     }
 
+    // Recuperando Estado
+    //---------------------------------
+    
+    public void setRecuperandoEstado(){
+        recuperandoEstado = true;
+    }
+
+    public bool getRecuperandoEstado(){
+        return recuperandoEstado;
+    }
+
+    // ================================
+
     void Start()
     {
         myQueue = new Queue<Jugada>();
+        recuperandoEstado = false;
 
         // Prueba
         StartCoroutine(prueba());
@@ -41,13 +60,13 @@ public class ColaJugadas : MonoBehaviour
         
         // Crear partida
         //myQueue.Enqueue(new JugadaCrearPartida(-1, 0, new string[]{"jesus", "juan", "sergio"}, false)); // asinc
-        myQueue.Enqueue(new JugadaCrearPartida(-1, 0, new string[]{"jesus", "juan", "sergio"}, true)); // sinc
+        //myQueue.Enqueue(new JugadaCrearPartida(-1, 0, new string[]{"jesus", "juan", "sergio"}, true)); // sinc
 
         // -----------------------------------------------
 
         //yield return pruebaFaseInicial2();
         //yield return pruebaYoAtaco(); // probar sinc+async
-        yield return pruebaMeAtacanSinc();
+        //yield return pruebaMeAtacanSinc();
         yield return new WaitForSeconds(0);
 
     }

@@ -22,12 +22,14 @@ public class loginScript : MonoBehaviour
   }
 
   private screenManager sm;
+  private VariablesEntorno varEntorno;
 
   void Start(){
     botonLogin.onClick.AddListener(loginAsync);    
     botonRegistro.onClick.AddListener(irRegistro); 
 
     sm = transform.parent.parent.GetComponent<screenManager>();
+    varEntorno = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>();
   }
 
   private void  loginAsync(){
@@ -58,7 +60,7 @@ public class loginScript : MonoBehaviour
         wsHandler.registrarme(username);
 
         //Guardo en el fichero de varaibles globales el nombre de usuario que se ha introducido
-        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setUsername(username);
+        varEntorno.myUsername = username;
 
         //////////////////////////////////////////////////////////
         //LLamar al servidor para actualizar los datos del usuario
@@ -71,45 +73,12 @@ public class loginScript : MonoBehaviour
 
         string resultado = respuesta.downloadHandler.text;
         Datos data = JsonUtility.FromJson<Datos>(resultado);
-        //Veo si estoy en partida y actualizo las variables de entrono
-        if(data.enPartida != -1){
-          transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setEstoyEnPartida(true);
-        }
-        else{
-          transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setEstoyEnPartida(false);
-        }
 
-        //Actualizo los objetos comprados en las variables de entorno
-        foreach(int objeto in data.objetosComprados){
-          if(objeto == 1){
-            Debug.Log("Mapa comprado");
-            transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setMapaComprado();
-          }
-          else if(objeto == 2){
-            Debug.Log("Ficha comprada");
-            transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaComprada(); 
-          }
-        }
-
-        //Actualizo la variable mapaSeleccionado de las variables de entorno
-        if(data.mapaSel == 0){
-          transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setmapaSeleccionado(false);
-        }
-        else{
-          transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setmapaSeleccionado(true);
-        }
-
-        //Actualizo la variable FichaSeleccionada de las variables de entorno
-        if(data.fichaSel == 0){
-          transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaSeleccionada(false);
-        }
-        else{
-          transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().setFichaSeleccionada(true);
-        }
-
+        // Puebla variables de entorno
+        poblarEntorno(data);
+       
         sm.switchScreens(this.name, "Home");
       }
-
       else
       {
         errorMessage.SetActive(true);
@@ -120,6 +89,43 @@ public class loginScript : MonoBehaviour
     {
       Debug.Log("Error: " + req.error);
     }
+  }
+
+  private void poblarEntorno(Datos data){
+        if(data.enPartida != -1){
+          varEntorno.estoyEnPartida = true;
+        }
+        else{
+          varEntorno.estoyEnPartida = false;
+        }
+
+        //Actualizo los objetos comprados 
+        foreach(int objeto in data.objetosComprados){
+          if(objeto == 1){
+            Debug.Log("Mapa comprado");
+            varEntorno.mapaComprado = true;
+          }
+          else if(objeto == 2){
+            Debug.Log("Ficha comprada");
+            varEntorno.fichaComprada = true; 
+          }
+        }
+
+        //Actualizo la variable mapaSeleccionado
+        if(data.mapaSel == 0){
+          varEntorno.mapaSeleccionado = false;
+        }
+        else{
+          varEntorno.mapaSeleccionado = true;
+        }
+
+        //Actualizo la variable FichaSeleccionada 
+        if(data.fichaSel == 0){
+          varEntorno.fichaSeleccionada = false;
+        }
+        else{
+          varEntorno.fichaSeleccionada = true;
+        }
   }
 
   private void irRegistro()

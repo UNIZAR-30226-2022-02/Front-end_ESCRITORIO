@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Dado : MonoBehaviour
 {
+    public const int duracionTirada = 3;
+
     private GameObject[] caras;
     int ultValor = 0;
     bool rodando;
@@ -16,7 +18,6 @@ public class Dado : MonoBehaviour
         int i = 0;
         caras = new GameObject[6];
         foreach(Transform cara in this.transform){
-            Debug.Log(cara);
             caras[i++] = cara.gameObject;
         }
     }
@@ -37,10 +38,10 @@ public class Dado : MonoBehaviour
             caras[ultValor].SetActive(false);
             caras[valor].SetActive(true);
             ultValor = valor;
-            // Pause before next itteration
+            // Pause before next iteration
             yield return new WaitForSeconds(0.05f);
         }
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(duracionTirada);
         caras[ultValor].SetActive(false);
     }
 

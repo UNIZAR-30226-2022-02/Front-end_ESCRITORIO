@@ -12,6 +12,7 @@ public class Partida : MonoBehaviour
     VariablesEntorno entorno;
     ElegirNumeroTropas popUpNumTropas;
 
+    public GameObject fondoDados;
     public Dado[] dadosAtaque;
     public Dado[] dadosDefensa;
 
@@ -39,7 +40,7 @@ public class Partida : MonoBehaviour
     public Territorio attackingFrom {get; set;} // Solo tiene valor en la fase de ataque del turno
     public Territorio movingFrom {get; set;} // Solo tiene valor en la fase de ataque del turno
     
-    private Jugada ultJugada;
+    public Jugada ultJugada {get; set;}
 
     // GUI
     private Text MensajeError;
@@ -267,7 +268,6 @@ public class Partida : MonoBehaviour
             }
 
             if(atacado.getPropietario() == myId){
-                StartCoroutine(ShowError("Estas siendo atacado, ¡Defiendete!", 5));
                 popUpNumTropas.mostrarDefender(atacante, atacado, jugadores[myId]);
             }
         }
@@ -294,7 +294,7 @@ public class Partida : MonoBehaviour
             return;
         }
         
-        decidirBatalla(ataque.resultadoDadosAtaque, j.resultadoDadosDefensa, ataque.territorioAtacante, ataque.territorioAtacado);
+        StartCoroutine(decidirBatalla(ataque.resultadoDadosAtaque, j.resultadoDadosDefensa, ataque.territorioAtacante, ataque.territorioAtacado));
     }
 
     private void ataqueAsincrono(JugadaAtaqueAsincrono j){
@@ -315,7 +315,7 @@ public class Partida : MonoBehaviour
                 return;
             }
 
-            decidirBatalla(j.resultadoDadosAtaque, j.resultadoDadosDefensa, j.territorioAtacante, j.territorioAtacado);
+            StartCoroutine(decidirBatalla(j.resultadoDadosAtaque, j.resultadoDadosDefensa, j.territorioAtacante, j.territorioAtacado));
         }
     }
     
@@ -331,19 +331,26 @@ public class Partida : MonoBehaviour
 
 
     // Funciones auxiliares
-    private void decidirBatalla(int[] resAtaque, int[] resDefensa, string idTerrAtaque, string idTerrDefensa){
+    private IEnumerator decidirBatalla(int[] resAtaque, int[] resDefensa, string idTerrAtaque, string idTerrDefensa){
         Debug.Log("Decidiendo batalla...");
 
-        // Muestra dados tirados
-        int j = 0;
-        foreach(int val in resAtaque){
-            dadosAtaque[j++].mostrarTirada(val);
+        if(!jugadas.getRecuperandoEstado()){
+            // Muestra dados tirados
+            int j = 0;
+            fondoDados.SetActive(true);
+            foreach(int val in resAtaque){
+                dadosAtaque[j++].mostrarTirada(val);
+            }
+            j = 0;
+            foreach(int val in resDefensa){
+                dadosDefensa[j++].mostrarTirada(val);
+            }
+            yield return new WaitForSeconds(Dado.duracionTirada);
+            fondoDados.SetActive(false);
         }
-        j = 0;
-        foreach(int val in resDefensa){
-            dadosDefensa[j++].mostrarTirada(val);
-        }
-        
+
+
+
         int[] atqAux = resAtaque;
         int[] defAux = resDefensa;
         Array.Sort(atqAux); Array.Reverse(atqAux);
@@ -365,7 +372,7 @@ public class Partida : MonoBehaviour
                 
                 if(tDef.sePuedeConquistar()){
                     // Consigue conquistar
-                    Debug.Log("Dado " + i + ": Territorio conquistado");
+                    StartCoroutine(ShowError("¡" + tDef.id + " conquistado por " + jugadores[jugAtq].userName +"!" , 5));
 
                     // Actualiza propietario
                     tDef.setPropietario(jugAtq);
@@ -379,7 +386,7 @@ public class Partida : MonoBehaviour
 
                     // Comprueba si ha eliminado al jugador defensor
                     if (!territorios.Exists(aux => aux.getPropietario() == jugDef)){
-                        Debug.Log("Dado " + i + ": Jugador eliminado");
+                        StartCoroutine(ShowError("¡Jugador " + jugadores[jugDef].userName + " eliminado!", 5));
 
                         jugadoresEliminados.Add(jugDef);
                         nJugadoresEliminados++;

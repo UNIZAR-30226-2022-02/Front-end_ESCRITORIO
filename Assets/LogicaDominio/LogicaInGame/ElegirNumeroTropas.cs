@@ -33,6 +33,7 @@ public class ElegirNumeroTropas : MonoBehaviour
     // ====================
     public void mostrarPonerTropas(Territorio t, Jugador j){
         this.gameObject.SetActive(true);
+        botonCerrar.gameObject.SetActive(true);
 
         jugador = j;
         terrDest = t;
@@ -44,6 +45,7 @@ public class ElegirNumeroTropas : MonoBehaviour
 
     public void mostrarMoverTropas(Territorio tOrig, Territorio tDest, Jugador j){
         this.gameObject.SetActive(true);
+        botonCerrar.gameObject.SetActive(true);
 
         jugador = j;
         terrOrig = tOrig;
@@ -57,6 +59,8 @@ public class ElegirNumeroTropas : MonoBehaviour
 
     public void mostrarAtacar(Territorio tOrig, Territorio tDest, Jugador j){
         this.gameObject.SetActive(true);
+        botonCerrar.gameObject.SetActive(true);
+
 
         jugador = j;
         terrOrig = tOrig;
@@ -71,13 +75,14 @@ public class ElegirNumeroTropas : MonoBehaviour
 
     public void mostrarDefender(Territorio tOrig, Territorio tDest, Jugador j){
         this.gameObject.SetActive(true);
+        botonCerrar.gameObject.SetActive(false);
 
         jugador = j;
         terrOrig = tOrig;
         terrDest = tDest;
 
         accion = Accion.defender;
-        prompt.text = "Elige el numero de tropas con las que quieres defender...";
+        prompt.text = tOrig.id +  " atacando " + tDest.id + ": ¿Con cuantas tropas defiendes?";
 
         int nDados= Mathf.Min(tDest.getNumTropas(), 2);
         slider.maxValue = nDados;
