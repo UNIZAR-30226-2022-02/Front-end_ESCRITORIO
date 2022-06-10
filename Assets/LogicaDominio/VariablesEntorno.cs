@@ -22,6 +22,6 @@ public class VariablesEntorno : MonoBehaviour
         mapaSeleccionado = false;
         fichaComprada = false;
         fichaSeleccionada = false;
-        idPartda = -1;
+        idPartida = -1;
     }
 }
