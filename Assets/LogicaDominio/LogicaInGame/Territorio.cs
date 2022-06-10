@@ -141,7 +141,7 @@ public class Territorio : MonoBehaviour
                 return;
             }
             // Ataque
-            if (ft==1 && propietario==myGame.myId && numTropas>1){
+            if (ft==1 && propietario==myGame.myId && numTropas>1 && myGame.ultJugada.type!="ataqueSincrono"){
                 // Es mi territorio, ataco desde el
                 transform.localScale = tamGrand; 
                 accionActual = Acciones.setTerritorioAtacante;  

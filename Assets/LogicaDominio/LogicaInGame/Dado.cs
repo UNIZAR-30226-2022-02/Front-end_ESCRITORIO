@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Dado : MonoBehaviour
 {
-    public const int duracionTirada = 3;
+    public const int duracionTirada = 10;
 
     private GameObject[] caras;
     int ultValor = 0;
@@ -41,7 +41,7 @@ public class Dado : MonoBehaviour
             // Pause before next iteration
             yield return new WaitForSeconds(0.05f);
         }
-        yield return new WaitForSeconds(duracionTirada);
+        yield return new WaitForSeconds(duracionTirada-1);
         caras[ultValor].SetActive(false);
     }
 
