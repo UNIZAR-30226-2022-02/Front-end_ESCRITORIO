@@ -54,7 +54,7 @@ public class Turno : MonoBehaviour
     }
 
     public bool checkTurno(Jugada j){
-        if (j.userId == turnoActual){
+        if (myGame.getIdJugador(j.userId) == turnoActual){
             return true;
         }
         else{
@@ -149,7 +149,7 @@ public class Turno : MonoBehaviour
 
         // Finaliza mi turno
         if (faseTurno == 0){
-            Jugada j = new JugadaFinTurno(myGame.myId, myGame.idPartida); 
+            Jugada j = new JugadaFinTurno(myGame.jugadores[myGame.myId].userName, myGame.idPartida); 
             wsHandler.notificaJugada(j);        
         }
     }

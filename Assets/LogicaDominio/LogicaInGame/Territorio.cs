@@ -199,16 +199,16 @@ public class Territorio : MonoBehaviour
             // --------------
             // Quedan territorios vacios
             case Acciones.ponerEnVacio1:
-                Jugada j1 = new JugadaPonerTropas(myGame.myId, myGame.idPartida, this.id, 1);
-                Jugada j2 = new JugadaFinTurno(myGame.myId, myGame.idPartida);
+                Jugada j1 = new JugadaPonerTropas(myGame.jugadores[myGame.myId].userName, myGame.idPartida, this.id, 1);
+                Jugada j2 = new JugadaFinTurno(myGame.jugadores[myGame.myId].userName, myGame.idPartida);
                 wsHandler.notificaJugada(j1);
                 wsHandler.notificaJugada(j2);
                 break;
 
             // NO quedan territorios vacios
             case Acciones.ponerEnMio1:
-                j1 = new JugadaPonerTropas(myGame.myId, myGame.idPartida, this.id, 1);
-                j2 = new JugadaFinTurno(myGame.myId, myGame.idPartida);
+                j1 = new JugadaPonerTropas(myGame.jugadores[myGame.myId].userName, myGame.idPartida, this.id, 1);
+                j2 = new JugadaFinTurno(myGame.jugadores[myGame.myId].userName, myGame.idPartida);
                 wsHandler.notificaJugada(j1);
                 wsHandler.notificaJugada(j2);
                 break;

@@ -158,13 +158,11 @@ public class Partida : MonoBehaviour
         for (int i=0; i<nJugadores; i++){
             jugadores[i].inicializa(j.listaJugadores[i], nJugadores);
 
-            //Inicializo myId
-            myId = 0;  // DEBUG!
-            /*
+            //Inicializo myId            
             if(j.listaJugadores[i] == entorno.myUsername){
                 myId = i;
             }
-            */
+            
         }
 
         // Oculto jugadores sobrantes
@@ -190,8 +188,8 @@ public class Partida : MonoBehaviour
 
         if(turno.checkTurno(j)){
             Territorio t = territorios.Find(aux => aux.id == j.idTerritorio);
-            Jugador pl =  jugadores[j.userId];
-            if (todosTerritoriosConquistados() && t.getPropietario()!=j.userId){
+            Jugador pl =  jugadores[getIdJugador(j.userId)];
+            if (todosTerritoriosConquistados() && t.getPropietario()!=getIdJugador(j.userId)){
                 Debug.Log("Error en ponerTropas: El jugador no es propietario del territorio.");
                 return;
             } 
@@ -200,7 +198,7 @@ public class Partida : MonoBehaviour
                 return;
             } 
 
-            t.setPropietario(j.userId);
+            t.setPropietario(getIdJugador(j.userId));
 
             int nuevoNumTropas = t.getNumTropas() + j.numTropas;
             t.setNumTropas(nuevoNumTropas);
@@ -217,13 +215,13 @@ public class Partida : MonoBehaviour
             Territorio tDest = territorios.Find(aux => aux.id == j.idTerritorioDestino);
             Debug.Log("moverTropas: tOrig = " + tOrig);
             Debug.Log("moverTropas: tDest = " + tDest);
-            Jugador pl =  jugadores[j.userId];
+            Jugador pl =  jugadores[getIdJugador(j.userId)];
 
-            if (tOrig.getPropietario()!=j.userId){
+            if (tOrig.getPropietario()!=getIdJugador(j.userId)){
                 Debug.Log("Error en moverTropas: El jugador no es propietario del pais de origen.");
                 return;
             } 
-            if (tDest.getPropietario()!=j.userId){
+            if (tDest.getPropietario()!=getIdJugador(j.userId)){
                 Debug.Log("Error en moverTropas: El jugador no es propietario del pais de destino.");
                 return;
             } 
@@ -254,11 +252,11 @@ public class Partida : MonoBehaviour
             Territorio atacante =  territorios.Find(aux => aux.id == j.territorioAtacante);
             Territorio atacado =  territorios.Find(aux => aux.id == j.territorioAtacado);
 
-            if(atacante.getPropietario() != j.userId){
+            if(atacante.getPropietario() != getIdJugador(j.userId)){
                 Debug.Log("Error en ataqueSincrono: El jugador no es propietario del territorio atacante.");
                 return;
             }
-            if(atacado.getPropietario() == j.userId){
+            if(atacado.getPropietario() == getIdJugador(j.userId)){
                 Debug.Log("Error en ataqueSincrono: El jugador no puede atacar su propio territorio.");
                 return;
             }
@@ -289,7 +287,7 @@ public class Partida : MonoBehaviour
         }
 
         Territorio atacado =  territorios.Find(aux => aux.id == j.territorioAtacado);
-        if(atacado.getPropietario() != j.userId){
+        if(atacado.getPropietario() != getIdJugador(j.userId)){
             Debug.Log("Error en defensaSincriona: El jugador no es propietario del territorio atacado.");
             return;
         }
@@ -302,11 +300,11 @@ public class Partida : MonoBehaviour
             Territorio atacante =  territorios.Find(aux => aux.id == j.territorioAtacante);
             Territorio atacado =  territorios.Find(aux => aux.id == j.territorioAtacado);
 
-            if(atacante.getPropietario() != j.userId){
+            if(atacante.getPropietario() != getIdJugador(j.userId)){
                 Debug.Log("Error en ataqueAsincrono: El jugador no es propietario del territorio atacante.");
                 return;
             }
-            if(atacado.getPropietario() == j.userId){
+            if(atacado.getPropietario() == getIdJugador(j.userId)){
                 Debug.Log("Error en ataqueAsincrono: El jugador no puede atacar su propio territorio.");
                 return;
             }
@@ -321,7 +319,7 @@ public class Partida : MonoBehaviour
     
     private void pedirCarta(JugadaPedirCarta j){
         if(turno.checkTurno(j)){
-            jugadores[j.userId].cartas.addCarta(j.cartaRecibida); 
+            jugadores[getIdJugador(j.userId)].cartas.addCarta(j.cartaRecibida); 
         }
     }
 
@@ -329,6 +327,16 @@ public class Partida : MonoBehaviour
 
     }
 
+    public int getIdJugador(String username){
+        try{
+            Jugador j = jugadores.Find(aux => aux.userName == username);
+            return j.id;
+        }
+        catch (Exception e){
+            Debug.Log("ERROR getIdJugador: El jugador "+ username + " no esta en la lista.\n" + e);
+            return -1;
+        }
+    }
 
     // Funciones auxiliares
     private IEnumerator decidirBatalla(int[] resAtaque, int[] resDefensa, string idTerrAtaque, string idTerrDefensa){
