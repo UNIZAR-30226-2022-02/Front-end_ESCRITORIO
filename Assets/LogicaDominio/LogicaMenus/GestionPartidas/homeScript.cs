@@ -38,6 +38,7 @@ public class homeScript : MonoBehaviour
 
         if(enPartida){
             //PEDIR JUGADAS Y METERLAS A LA COLA
+
             /*
             //Desactivo 
             List<Jugadas> jugadas...
@@ -49,7 +50,7 @@ public class homeScript : MonoBehaviour
         }
 
         botonAtras.onClick.AddListener(quitarCrearPartida);
-        botonTienda.onClick.AddListener(tienda);
+        botonTienda.onClick.AddListener(irTienda);
         botonHistorial.onClick.AddListener(historial);
         botonCrearPartidaDatos.onClick.AddListener(crearPartida);
         botonCrearPartidaEnviar.onClick.AddListener(enviarDatosCrearPartida);
@@ -86,7 +87,7 @@ public class homeScript : MonoBehaviour
     
 
     //Cambio a pantalla tienda
-    private void tienda()
+    private void irTienda()
     {
         //Para inicializar la tienda si la ficha esta comprada o seleccionada
         if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().fichaComprada == true){
@@ -156,6 +157,7 @@ public class homeScript : MonoBehaviour
 
         string resultado = req.downloadHandler.text;
         //respuesta,idPartida,codigo
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartda = resultado.idPartida;
         if(privacidad == "Privada"){
             DatosCrearPrivada data = JsonUtility.FromJson<DatosCrearPrivada>(resultado);
             BordeCrearPartida.gameObject.SetActive(false);
@@ -175,8 +177,10 @@ public class homeScript : MonoBehaviour
     public void iniciarPartida()
     {
         BordeEsperarJugadores.gameObject.SetActive(false);
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().estoyEnPartida = true;
         sm.switchScreens(this.name, "Tablero");
     }
+
     //Veo si estoy en una partida, si lo estoy muestro mensaje de error, sino llamo al servidor para
     //que busque una partida
     private void buscarPartida()
@@ -210,6 +214,10 @@ public class homeScript : MonoBehaviour
         yield return req.Send();
         string resultado = req.downloadHandler.text;
 
+        //Actualizo las variables de entorno (como recibo lo mismo que al crear una partida publica lo recibo con ese tipo de dato)
+        DatosCrearPublica data = JsonUtility.FromJson<DatosCrearPublica>(resultado);
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartda = data.idPartida;
+
         if(req.error != null){
             if(resultado != "OK"){
                 StartCoroutine(MostrarError("errorBuscar"));
@@ -241,6 +249,10 @@ public class homeScript : MonoBehaviour
         yield return req.Send();
 
         string resultado = req.downloadHandler.text;
+        //Actualizo las variables de entorno (como recibo lo mismo que al crear una partida publica lo recibo con ese tipo de dato)
+        DatosCrearPublica data = JsonUtility.FromJson<DatosCrearPublica>(resultado);
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartda = data.idPartida;
+
         if(req.error != null){
             if(resultado != "OK"){
                 StartCoroutine(MostrarError("errorUnirse"));
