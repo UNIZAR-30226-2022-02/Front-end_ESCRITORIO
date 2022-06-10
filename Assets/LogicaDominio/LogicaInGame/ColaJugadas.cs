@@ -65,7 +65,7 @@ public class ColaJugadas : MonoBehaviour
         // -----------------------------------------------
 
         //yield return pruebaFaseInicial2();
-        yield return pruebaYoAtaco(); // probar sinc+async
+        //yield return pruebaYoAtaco(); // probar sinc+async
         //yield return pruebaMeAtacanSinc();
         yield return new WaitForSeconds(0);
 
