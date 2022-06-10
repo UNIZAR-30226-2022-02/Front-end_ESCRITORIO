@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class Dado : MonoBehaviour
 {
-    public const int duracionTirada = 10;
+    public const int duracionTirada = 6;
 
     private GameObject[] caras;
     int ultValor = 0;
-    bool rodando;
 
     // Start is called before the first frame update
     void Awake()
@@ -41,7 +40,7 @@ public class Dado : MonoBehaviour
             // Pause before next iteration
             yield return new WaitForSeconds(0.05f);
         }
-        yield return new WaitForSeconds(duracionTirada-1);
+        yield return new WaitForSeconds(duracionTirada - 2f);
         caras[ultValor].SetActive(false);
     }
 
