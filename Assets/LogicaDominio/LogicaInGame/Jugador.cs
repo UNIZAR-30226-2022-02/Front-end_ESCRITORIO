@@ -146,8 +146,7 @@ public class Jugador : MonoBehaviour
     // GUI
 
     private void setColor(int turnoActual){
-        if(myGame.jugadoresEliminados.Contains(turnoActual)){
-            
+        if(myGame.jugadoresEliminados.Contains(this.id)){
             this.GetComponent<Image>().color = new Color32(128,0,3,255);
             return;
         }
