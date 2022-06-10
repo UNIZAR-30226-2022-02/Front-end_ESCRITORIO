@@ -157,9 +157,10 @@ public class homeScript : MonoBehaviour
 
         string resultado = req.downloadHandler.text;
         //respuesta,idPartida,codigo
-        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartda = resultado.idPartida;
         if(privacidad == "Privada"){
             DatosCrearPrivada data = JsonUtility.FromJson<DatosCrearPrivada>(resultado);
+            transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartida = data.idPartida;
+
             BordeCrearPartida.gameObject.SetActive(false);
             
             //Mostrar popup con el código y boton para ir al tablero
@@ -168,6 +169,7 @@ public class homeScript : MonoBehaviour
         }
         else if(privacidad == "Publica"){
             DatosCrearPublica data = JsonUtility.FromJson<DatosCrearPublica>(resultado);
+            transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartida = data.idPartida;
             BordeCrearPartida.gameObject.SetActive(false);
         } 
         BordeEsperarJugadores.gameObject.SetActive(true);
@@ -216,7 +218,7 @@ public class homeScript : MonoBehaviour
 
         //Actualizo las variables de entorno (como recibo lo mismo que al crear una partida publica lo recibo con ese tipo de dato)
         DatosCrearPublica data = JsonUtility.FromJson<DatosCrearPublica>(resultado);
-        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartda = data.idPartida;
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartida = data.idPartida;
 
         if(req.error != null){
             if(resultado != "OK"){
@@ -251,7 +253,7 @@ public class homeScript : MonoBehaviour
         string resultado = req.downloadHandler.text;
         //Actualizo las variables de entorno (como recibo lo mismo que al crear una partida publica lo recibo con ese tipo de dato)
         DatosCrearPublica data = JsonUtility.FromJson<DatosCrearPublica>(resultado);
-        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartda = data.idPartida;
+        transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartida = data.idPartida;
 
         if(req.error != null){
             if(resultado != "OK"){
