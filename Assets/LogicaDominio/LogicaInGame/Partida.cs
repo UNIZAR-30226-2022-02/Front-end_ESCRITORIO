@@ -159,7 +159,7 @@ public class Partida : MonoBehaviour
             jugadores[i].inicializa(j.listaJugadores[i], nJugadores);
 
             //Inicializo myId            
-            if(j.listaJugadores[i].userName == entorno.myUsername){
+            if(j.listaJugadores[i] == entorno.myUsername){
                 myId = i;
             }
             
