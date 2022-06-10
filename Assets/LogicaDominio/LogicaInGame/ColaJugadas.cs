@@ -59,7 +59,7 @@ public class ColaJugadas : MonoBehaviour
     private IEnumerator prueba(){
         
         // Crear partida
-        myQueue.Enqueue(new JugadaCrearPartida("server", 0, new string[]{"jesus", "juan", "sergio"}, false)); // asinc
+        //myQueue.Enqueue(new JugadaCrearPartida("server", 0, new string[]{"jesus", "juan", "sergio"}, false)); // asinc
         //myQueue.Enqueue(new JugadaCrearPartida(-1, 0, new string[]{"jesus", "juan", "sergio"}, true)); // sinc
 
         // -----------------------------------------------
