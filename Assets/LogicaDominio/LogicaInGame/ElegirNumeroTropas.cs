@@ -119,22 +119,22 @@ public class ElegirNumeroTropas : MonoBehaviour
         Debug.Log("PopUpNumTropas boton pulsado..., accion = " + accion);
         switch (accion){
             case Accion.poner:
-                Jugada j = new JugadaPonerTropas(jugador.id, myGame.idPartida, terrDest.id, (int) slider.value);
+                Jugada j = new JugadaPonerTropas(jugador.userName, myGame.idPartida, terrDest.id, (int) slider.value);
                 wsHandler.notificaJugada(j);
                 break;
 
             case Accion.mover:
-                j = new JugadaMoverTropas(jugador.id, myGame.idPartida, terrOrig.id, terrDest.id, (int) slider.value);
+                j = new JugadaMoverTropas(jugador.userName, myGame.idPartida, terrOrig.id, terrDest.id, (int) slider.value);
                 wsHandler.notificaJugada(j);
 
                 // Fin turno
-                wsHandler.notificaJugada(new JugadaFinTurno(jugador.id, myGame.idPartida));
+                wsHandler.notificaJugada(new JugadaFinTurno(jugador.userName, myGame.idPartida));
                 break;
 
             case Accion.atacar:
                 if(myGame.partidaSincrona){
                     int[] dadosAtaque = tirarDados((int) slider.value);
-                    j = new JugadaAtaqueSincrono(jugador.id, myGame.idPartida, terrOrig.id, terrDest.id, dadosAtaque);
+                    j = new JugadaAtaqueSincrono(jugador.userName, myGame.idPartida, terrOrig.id, terrDest.id, dadosAtaque);
 
                 }
                 else{
@@ -143,14 +143,14 @@ public class ElegirNumeroTropas : MonoBehaviour
                     int nDadosDef = Mathf.Min(2, terrDest.getNumTropas());
                     int[] dadosDef = tirarDados(nDadosDef);
 
-                    j = new JugadaAtaqueAsincrono(jugador.id, myGame.idPartida, terrOrig.id, terrDest.id, dadosAtaque, dadosDef);
+                    j = new JugadaAtaqueAsincrono(jugador.userName, myGame.idPartida, terrOrig.id, terrDest.id, dadosAtaque, dadosDef);
                 }
                 wsHandler.notificaJugada(j);
                 break;
 
             case Accion.defender:
                 int[] dadosDefensa = tirarDados((int) slider.value);
-                j = new JugadaDefensaSincrona(jugador.id, myGame.idPartida, terrOrig.id, terrDest.id, dadosDefensa);
+                j = new JugadaDefensaSincrona(jugador.userName, myGame.idPartida, terrOrig.id, terrDest.id, dadosDefensa);
                 wsHandler.notificaJugada(j);
                 break;
 

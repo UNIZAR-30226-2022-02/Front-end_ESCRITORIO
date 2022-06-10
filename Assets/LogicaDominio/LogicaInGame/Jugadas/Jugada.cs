@@ -12,10 +12,10 @@ namespace LogicaInGame.Jugadas
     public class Jugada 
     {
         public string type;
-        public int userId;
+        public string userId;
         public int idPartida;
 
-        public Jugada(string type, int userId, int idPartida){
+        public Jugada(string type, string userId, int idPartida){
             this.type = type;
             this.userId = userId;
             this.idPartida = idPartida;
@@ -80,7 +80,7 @@ namespace LogicaInGame.Jugadas
         public string[] listaJugadores;
         public bool partidaSincrona;
         
-        public JugadaCrearPartida(int userId, int idPartida, string[] listaJugadores, bool partidaSincrona)
+        public JugadaCrearPartida(string userId, int idPartida, string[] listaJugadores, bool partidaSincrona)
         : base("crearPartida", userId, idPartida)
         {
             this.listaJugadores = listaJugadores;
@@ -100,7 +100,7 @@ namespace LogicaInGame.Jugadas
     [System.Serializable]
     public class JugadaFinTurno : Jugada
     {
-        public JugadaFinTurno(int userId, int idPartida)
+        public JugadaFinTurno(string userId, int idPartida)
         : base("finTurno", userId, idPartida)
         {}
     }
@@ -110,7 +110,7 @@ namespace LogicaInGame.Jugadas
         public string idTerritorio; // TODO: decidir tipo de dato
         public int numTropas;
 
-        public JugadaPonerTropas(int userId, int idPartida, string idTerritorio, int numTropas)
+        public JugadaPonerTropas(string userId, int idPartida, string idTerritorio, int numTropas)
         : base("ponerTropas", userId, idPartida)
         {
             this.idTerritorio = idTerritorio;
@@ -128,7 +128,7 @@ namespace LogicaInGame.Jugadas
         public string idTerritorioDestino;
         public int numTropas; 
 
-        public JugadaMoverTropas(int userId, int idPartida, string idTerritorioOrigen, string idTerritorioDestino, int numTropas)
+        public JugadaMoverTropas(string userId, int idPartida, string idTerritorioOrigen, string idTerritorioDestino, int numTropas)
         : base("moverTropas", userId, idPartida)
         {
             this.idTerritorioOrigen = idTerritorioOrigen;
@@ -148,7 +148,7 @@ namespace LogicaInGame.Jugadas
     {
         public int[] cartasUtilizadas;
 
-        public JugadaUtilizarCartas(int userId, int idPartida, int[] cartasUtilizadas)
+        public JugadaUtilizarCartas(string userId, int idPartida, int[] cartasUtilizadas)
         : base("utilizarCartas", userId, idPartida)
         {
             this.cartasUtilizadas = cartasUtilizadas;
@@ -165,7 +165,7 @@ namespace LogicaInGame.Jugadas
         public string territorioAtacado;
         public int[] resultadoDadosAtaque;
 
-        public JugadaAtaqueSincrono(int userId, int idPartida, string territorioAtacante, string territorioAtacado, int[] resultadoDadosAtaque)
+        public JugadaAtaqueSincrono(string userId, int idPartida, string territorioAtacante, string territorioAtacado, int[] resultadoDadosAtaque)
         : base("ataqueSincrono", userId, idPartida)
         {
             this.territorioAtacante = territorioAtacante;
@@ -185,7 +185,7 @@ namespace LogicaInGame.Jugadas
         public string territorioAtacado;
         public int[] resultadoDadosDefensa;
 
-        public JugadaDefensaSincrona(int userId, int idPartida, string territorioAtacante, string territorioAtacado, int[] resultadoDadosDefensa)
+        public JugadaDefensaSincrona(string userId, int idPartida, string territorioAtacante, string territorioAtacado, int[] resultadoDadosDefensa)
         : base("defensaSincrona", userId, idPartida)
         {
             this.territorioAtacante = territorioAtacante;
@@ -206,7 +206,7 @@ namespace LogicaInGame.Jugadas
         public int[] resultadoDadosAtaque;
         public int[] resultadoDadosDefensa;
 
-        public JugadaAtaqueAsincrono(int userId, int idPartida, string territorioAtacante, string territorioAtacado,
+        public JugadaAtaqueAsincrono(string userId, int idPartida, string territorioAtacante, string territorioAtacado,
                                      int[] resultadoDadosAtaque, int[] resultadoDadosDefensa)
         : base("ataqueAsincrono", userId, idPartida)
         {
@@ -227,7 +227,7 @@ namespace LogicaInGame.Jugadas
     {
         public int cartaRecibida;
 
-        public JugadaPedirCarta(int userId, int idPartida, int cartaRecibida)
+        public JugadaPedirCarta(string userId, int idPartida, int cartaRecibida)
         : base ("pedirCarta", userId, idPartida)
         {
             this.cartaRecibida = cartaRecibida;
@@ -241,7 +241,7 @@ namespace LogicaInGame.Jugadas
     public class JugadaFinPartida : Jugada
     {
         public List<string> listaJugadores;
-        public JugadaFinPartida(int userId, int idPartida, List<string> listaJugadores)
+        public JugadaFinPartida(string userId, int idPartida, List<string> listaJugadores)
         : base ("finPartida", userId, idPartida)
         {
             this.listaJugadores = listaJugadores;
