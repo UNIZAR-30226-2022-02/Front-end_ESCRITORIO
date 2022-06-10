@@ -69,7 +69,6 @@ public class loginScript : MonoBehaviour
 
         UnityWebRequest respuesta = UnityWebRequest.Post("serverrisk.herokuapp.com/login/datos", form2);
         yield return respuesta.Send();
-        Debug.Log("LLega respuesta Json");
 
         string resultado = respuesta.downloadHandler.text;
         Datos data = JsonUtility.FromJson<Datos>(resultado);
@@ -102,11 +101,9 @@ public class loginScript : MonoBehaviour
         //Actualizo los objetos comprados 
         foreach(int objeto in data.objetosComprados){
           if(objeto == 1){
-            Debug.Log("Mapa comprado");
             varEntorno.mapaComprado = true;
           }
           else if(objeto == 2){
-            Debug.Log("Ficha comprada");
             varEntorno.fichaComprada = true; 
           }
         }

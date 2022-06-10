@@ -157,25 +157,26 @@ public class homeScript : MonoBehaviour
         string resultado = req.downloadHandler.text;
         //respuesta,idPartida,codigo
         if(privacidad == "Privada"){
-            Debug.Log("Privada");
-
             DatosCrearPrivada data = JsonUtility.FromJson<DatosCrearPrivada>(resultado);
-
             BordeCrearPartida.gameObject.SetActive(false);
+            
             //Mostrar popup con el código y boton para ir al tablero
             BordeMostrarCodigo.gameObject.SetActive(true);
             codigoDePartida.text = data.codigo;          
         }
         else if(privacidad == "Publica"){
-            Debug.Log("Publica");
-
             DatosCrearPublica data = JsonUtility.FromJson<DatosCrearPublica>(resultado);
-
             BordeCrearPartida.gameObject.SetActive(false);
-            sm.switchScreens(this.name, "Tablero");
-        }
+        } 
+        BordeEsperarJugadores.gameObject.SetActive(true);
     }
 
+    //Funcion que se llama desde el WebSocket
+    public void iniciarPartida()
+    {
+        BordeEsperarJugadores.gameObject.SetActive(false);
+        sm.switchScreens(this.name, "Tablero");
+    }
     //Veo si estoy en una partida, si lo estoy muestro mensaje de error, sino llamo al servidor para
     //que busque una partida
     private void buscarPartida()
@@ -213,10 +214,6 @@ public class homeScript : MonoBehaviour
             if(resultado != "OK"){
                 StartCoroutine(MostrarError("errorBuscar"));
             }
-            else{
-                BordeEsperarJugadores.gameObject.SetActive(false);
-                sm.switchScreens(this.name, "Tablero");
-            }
         }       
     }
 
@@ -249,7 +246,7 @@ public class homeScript : MonoBehaviour
                 StartCoroutine(MostrarError("errorUnirse"));
             }      
             else{
-                sm.switchScreens(this.name, "Tablero");
+                BordeEsperarJugadores.gameObject.SetActive(true);
             }
         }
         else{

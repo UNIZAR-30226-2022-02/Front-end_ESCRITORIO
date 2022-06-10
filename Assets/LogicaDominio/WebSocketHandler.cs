@@ -46,7 +46,9 @@ public class WebSocketHandler : MonoBehaviour
         
         string json = e.data.ToString();
         Jugada j = Jugada.parseJsonJugada(json);        
-
+        if(j.type == "crearPartida"){
+            transform.GetChild(0).GetChild(2).gameObject.GetComponent<homeScript>().iniciarPartida();
+        }
         colaJugadas.nuevaJugada(j);
     }
 

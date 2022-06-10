@@ -104,14 +104,15 @@ public class tiendaScript : MonoBehaviour
             yield return new WaitForSeconds(2);
             errorCompraMapa.gameObject.SetActive(false);
             Debug.Log("No se ha podido comprar el mapa");
-
         }
+
         else if(res == "false" & objetoComprado == "ficha"){
             errorCompraFicha.gameObject.SetActive(true);
             yield return new WaitForSeconds(2);
             errorCompraFicha.gameObject.SetActive(false);
             Debug.Log("No se ha podido comprar la ficha");
         }
+
         //La compra se ha podido realizar
         else if(res == "true" & objetoComprado == "mapa"){
             Debug.Log("Se ha podido realizar la compra de mapa");
@@ -120,7 +121,8 @@ public class tiendaScript : MonoBehaviour
             botonComprarMapa.gameObject.SetActive(false);
             botonSeleccionarMapa.gameObject.SetActive(true);
             transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().mapaComprado = true;
-        }   
+        } 
+
         else if(res == "true" & objetoComprado == "ficha"){
             Debug.Log("Se ha podido realizar la compra de ficha");
             errorCompraMapa.gameObject.SetActive(false);
