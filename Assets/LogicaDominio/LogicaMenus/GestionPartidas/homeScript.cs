@@ -4,6 +4,7 @@ using System.Net;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
@@ -29,10 +30,10 @@ public class homeScript : MonoBehaviour
         public int idPartida;
     }
     
-    [System.Serializable]
+   /* [System.Serializable]
     public class JugadasRecuperadas{
-        public List<Jugada> listaJugadas;
-    }
+        public Jugada[] listaJugadas;
+    }*/
 
 
     // Start is called before the first frame update
@@ -74,14 +75,19 @@ public class homeScript : MonoBehaviour
         yield return req.Send();
 
         string resultado = req.downloadHandler.text;
-        JugadasRecuperadas listJug = JsonUtility.FromJson<JugadasRecuperadas>(resultado);
-        ColaJugadas colaJugadas = this.GetComponent<ColaJugadas>();   
-        Debug.Log("resultado:" + req.downloadHandler.text);
-        Debug.Log("Recuperando jugadas...");
-        foreach (Jugada jug in listJug.listaJugadas){
+        //JugadasRecuperadas listJug = JsonUtility.FromJson<JugadasRecuperadas>("{\"listaJugadas\":" + resultado + "}");
+        resultado = resultado.Substring(1,resultado.Length - 2);
+        Regex regex = new Regex(@"{.*?}");
+        MatchCollection matches = regex.Matches(resultado);
+        ColaJugadas colaJugadas = transform.parent.parent.gameObject.GetComponent<ColaJugadas>();   
+        Debug.Log("Resultado:" + req.downloadHandler.text);
+        for(int i = 0; i < matches.Count; i++){
             //Jugada jug = JsonUtility.FromJson<Jugada>(json);
+            Debug.Log("Json: " + matches[i].Value);
+            Jugada jug = Jugada.parseJsonJugada(matches[i].Value);
             colaJugadas.nuevaJugada(jug);
-            Debug.Log("Jugada:" + jug);
+            Debug.Log("userId" + jug.userId);
+            Debug.Log("Jugada:" + jug.ToString());
         }
     }
 
