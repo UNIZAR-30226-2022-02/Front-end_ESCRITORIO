@@ -2815,7 +2815,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &101901168
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15875,8 +15875,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -249.99998, y: -20}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: -249.99998, y: -23}
+  m_SizeDelta: {x: 199, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &717478064
 MonoBehaviour:
@@ -15898,7 +15898,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 6162a6626fb6df547bc31758fd97c59b, type: 3}
+  m_Texture: {fileID: 2800000, guid: a25ffbea715d70c419f40df0dc9f1436, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -16089,7 +16089,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &728360501
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19076,6 +19076,7 @@ MonoBehaviour:
   - {fileID: 1721818915}
   - {fileID: 1492834198}
   - {fileID: 532320645}
+  fondoAntiguo: {fileID: 1648854082}
 --- !u!222 &870745725
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -27125,6 +27126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27f0bdab6527e364289eafe04b3b49b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  smile: {fileID: 2800000, guid: cd4587ac4a244414a9d31fc09bad9a26, type: 3}
+  sadFace: {fileID: 2800000, guid: 33913576b3b26e041a1099a05c6811b4, type: 3}
 --- !u!1 &1165003443
 GameObject:
   m_ObjectHideFlags: 0
@@ -37590,14 +37593,14 @@ RectTransform:
   m_GameObject: {fileID: 1648854082}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -1}
-  m_LocalScale: {x: 425, y: 424, z: 1}
+  m_LocalScale: {x: 60, y: 60, z: 1}
   m_Children: []
   m_Father: {fileID: 870745721}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -27, y: 0}
+  m_AnchoredPosition: {x: -34, y: -9}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &1648854084
@@ -37640,13 +37643,13 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 6162a6626fb6df547bc31758fd97c59b, type: 3}
-  m_Color: {r: 0.7254902, g: 0.8666667, b: 1, a: 0.74509805}
+  m_Sprite: {fileID: 21300000, guid: a25ffbea715d70c419f40df0dc9f1436, type: 3}
+  m_Color: {r: 0.9056604, g: 0.8578142, b: 0.8578142, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
+  m_DrawMode: 2
+  m_Size: {x: 19.19, y: 11.56}
+  m_AdaptiveModeThreshold: 0.65
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
