@@ -31,7 +31,7 @@ public class homeScript : MonoBehaviour
     
     [System.Serializable]
     public class JugadasRecuperadas{
-        public List<Jugada> lista;
+        public List<Jugada> listaJugadas;
     }
 
 
@@ -78,7 +78,7 @@ public class homeScript : MonoBehaviour
         ColaJugadas colaJugadas = this.GetComponent<ColaJugadas>();   
         Debug.Log("resultado:" + req.downloadHandler.text);
         Debug.Log("Recuperando jugadas...");
-        foreach (Jugada jug in listJug){
+        foreach (Jugada jug in listJug.listaJugadas){
             //Jugada jug = JsonUtility.FromJson<Jugada>(json);
             colaJugadas.nuevaJugada(jug);
             Debug.Log("Jugada:" + jug);
