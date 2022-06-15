@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-
+using LogicaInGame.Jugadas;
 public class homeScript : MonoBehaviour
 {
     public Button botonTienda, botonHistorial, botonCrearPartidaDatos,botonCrearPartidaEnviar, botonBuscarPartida, botonUnirse, botonAtras,botonIrTablero;
@@ -28,6 +28,12 @@ public class homeScript : MonoBehaviour
         public string respuesta;
         public int idPartida;
     }
+    
+    [System.Serializable]
+    public class JugadasRecuperadas{
+        public List<Jugada> lista;
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -37,16 +43,12 @@ public class homeScript : MonoBehaviour
         bool enPartida = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().estoyEnPartida;
 
         if(enPartida){
+
+            //Quitar botones de crear y buscar
+            botonCrearPartidaDatos.gameObject.SetActive(false);
+
             //PEDIR JUGADAS Y METERLAS A LA COLA
-
-            /*
-            //Desactivo 
-            List<Jugadas> jugadas...
-
-            foreach(Jugada jug in jugadas){
-                transform.parent.parent.gameObject.GetComponent<ColaJugadas>().nuevaJugada(jug);
-            }
-            */
+            StartCoroutine(RecuperarJugadas());
         }
 
         botonAtras.onClick.AddListener(quitarCrearPartida);
@@ -58,6 +60,29 @@ public class homeScript : MonoBehaviour
         botonUnirse.onClick.AddListener(unirsePartida);
         botonIrTablero.onClick.AddListener(irTablero);
         sm = transform.parent.parent.GetComponent<screenManager>();
+    }
+
+    private IEnumerator RecuperarJugadas()
+    {
+        WWWForm form = new WWWForm();
+        string user = username.text;
+        form.AddField("username", user);
+        int idPartida =  transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartida;
+        form.AddField("idPartida",idPartida);
+
+        UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/jugadas/obtenerJugadas", form);
+        yield return req.Send();
+
+        string resultado = req.downloadHandler.text;
+        JugadasRecuperadas listJug = JsonUtility.FromJson<JugadasRecuperadas>(resultado);
+        ColaJugadas colaJugadas = this.GetComponent<ColaJugadas>();   
+        Debug.Log("resultado:" + req.downloadHandler.text);
+        Debug.Log("Recuperando jugadas...");
+        foreach (Jugada jug in listJug){
+            //Jugada jug = JsonUtility.FromJson<Jugada>(json);
+            colaJugadas.nuevaJugada(jug);
+            Debug.Log("Jugada:" + jug);
+        }
     }
 
     private void irTablero(){
@@ -134,7 +159,7 @@ public class homeScript : MonoBehaviour
         BordeCrearPartida.gameObject.SetActive(false);
         StartCoroutine(enviarDatosCrear());
     }
-
+    
     //Envio los datos necesarios para crear una partida y no recibo nada (supongo que siempre se puede)
     private IEnumerator enviarDatosCrear()
     {
@@ -156,6 +181,7 @@ public class homeScript : MonoBehaviour
         yield return req.Send();
 
         string resultado = req.downloadHandler.text;
+        
         //respuesta,idPartida,codigo
         if(privacidad == "Privada"){
             DatosCrearPrivada data = JsonUtility.FromJson<DatosCrearPrivada>(resultado);
@@ -190,7 +216,7 @@ public class homeScript : MonoBehaviour
         bool enPartida = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().estoyEnPartida;
         //Si estoy en partida muestro error
         if(enPartida){
-            StartCoroutine(MostrarError("estoyEnPartida"));
+            sm.switchScreens(this.name, "Tablero");
         }
         //Sino le envio datos al servidor para que busque una partida
         else{
@@ -215,9 +241,10 @@ public class homeScript : MonoBehaviour
 
         yield return req.Send();
         string resultado = req.downloadHandler.text;
-
+        Debug.Log("resEnviarDatosBuscar" + resultado);
         //Actualizo las variables de entorno (como recibo lo mismo que al crear una partida publica lo recibo con ese tipo de dato)
         DatosCrearPublica data = JsonUtility.FromJson<DatosCrearPublica>(resultado);
+        Debug.Log("IdPartida:" + data.idPartida);
         transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartida = data.idPartida;
 
         if(req.error != null){

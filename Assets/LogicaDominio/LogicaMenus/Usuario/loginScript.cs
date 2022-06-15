@@ -17,7 +17,7 @@ public class loginScript : MonoBehaviour
 
   [System.Serializable]
   public class Datos{
-    public int mapaSel,fichaSel, enPartida;
+    public int mapaSel,fichaSel, enPartida,idPartida;
     public List<int> objetosComprados;
   }
 
@@ -93,9 +93,10 @@ public class loginScript : MonoBehaviour
   private void poblarEntorno(Datos data){
         if(data.enPartida != -1){
           varEntorno.estoyEnPartida = true;
+          varEntorno.idPartida = data.idPartida;
         }
         else{
-          varEntorno.estoyEnPartida = false;
+          varEntorno.estoyEnPartida = false;         
         }
 
         //Actualizo los objetos comprados 
