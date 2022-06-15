@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
 using LogicaInGame.Jugadas;
 
 [RequireComponent(typeof(PolygonCollider2D))] //Para que coja el contorno de cada pais para el cambio de color
@@ -22,9 +23,11 @@ public class Territorio : MonoBehaviour
     private WebSocketHandler wsHandler;
     private Turno turno;
     private ElegirNumeroTropas popUpNumTropas;
+    private VariablesEntorno entorno;
 
     // GUI
     private Text numTropasText;
+    private RawImage iconoTropas;
     private Vector3 tamPeq, tamGrand;
     private SpriteRenderer sprite;
 
@@ -63,6 +66,7 @@ public class Territorio : MonoBehaviour
         wsHandler = myGame.gameObject.transform.parent.GetComponent<WebSocketHandler>();
         turno = myGame.gameObject.transform.Find("Turno").gameObject.GetComponent<Turno>();
         popUpNumTropas = myGame.gameObject.transform.Find("PopUpNumTropas").gameObject.GetComponent<ElegirNumeroTropas>();
+        entorno =  this.transform.parent.parent.parent.parent.gameObject.GetComponent<VariablesEntorno>();
 
         propietario = -1;
         numTropas = 0;
@@ -74,12 +78,21 @@ public class Territorio : MonoBehaviour
 
         numTropasText = this.transform.Find("tropas").Find("num").gameObject.GetComponent<Text>();
         numTropasText.text = "0";
+        iconoTropas = this.transform.Find("tropas").gameObject.GetComponent<RawImage>();
 
         accionActual = Acciones.nula;
     }
 
 
     void Update(){
+
+        if (entorno.fichaSeleccionada){
+            iconoTropas.texture = entorno.smile;
+        }
+        else{
+            iconoTropas.texture = entorno.sadFace;
+        }
+
         if(myGame.movingFrom != null && myGame.movingFrom == this){
             transform.localScale = tamGrand;
         }

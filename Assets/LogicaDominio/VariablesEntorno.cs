@@ -12,7 +12,9 @@ public class VariablesEntorno : MonoBehaviour
     public bool fichaComprada {get; set;}
     public bool fichaSeleccionada  {get; set;}
     public int idPartida {get; set;}
-    
+
+    public Texture smile, sadFace;
+        
     // Start is called before the first frame update
     void Start()
     {

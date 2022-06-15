@@ -43,6 +43,7 @@ public class Partida : MonoBehaviour
     public Jugada ultJugada {get; set;}
 
     // GUI
+    public GameObject fondoAntiguo;
     private Text MensajeError;
 
     // ====================
@@ -96,6 +97,15 @@ public class Partida : MonoBehaviour
     }
 
     void Update(){
+        // Gestión fondo
+        if(entorno.mapaSeleccionado){
+            fondoAntiguo.SetActive(true);
+        }
+        else{
+            fondoAntiguo.SetActive(false);
+        }
+
+        // Procesa jugadas
         while(jugadas.hayJugadas()){
             procesarJugada(jugadas.ultimaJugada());
         }
