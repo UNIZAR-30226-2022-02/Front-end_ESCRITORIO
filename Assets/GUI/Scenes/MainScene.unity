@@ -27126,8 +27126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27f0bdab6527e364289eafe04b3b49b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smile: {fileID: 0}
-  sadFace: {fileID: 0}
+  smile: {fileID: 2800000, guid: 95254eb2d28ec7c4496b96c0a2f20e22, type: 3}
+  sadFace: {fileID: 2800000, guid: 33913576b3b26e041a1099a05c6811b4, type: 3}
 --- !u!1 &1165003443
 GameObject:
   m_ObjectHideFlags: 0
