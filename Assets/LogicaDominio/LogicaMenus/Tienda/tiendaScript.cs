@@ -51,12 +51,14 @@ public class tiendaScript : MonoBehaviour
     private void ActivarSeleccionarMapa()
     {
         //Empiezo corutina
+        transform.parent.GetChild(2).gameObject.GetComponent<homeScript>().imagenMapaSeleccionado.gameObject.SetActive(true);
         StartCoroutine(seleccionMapa());
     }
 
     private void QuitarSeleccionMapa()
     {
         //Empiezo corutina
+        transform.parent.GetChild(2).gameObject.GetComponent<homeScript>().imagenMapaSeleccionado.gameObject.SetActive(false);
         StartCoroutine(QuitarSeleccionObjeto("mapa"));
     }
 
@@ -69,12 +71,16 @@ public class tiendaScript : MonoBehaviour
     private void ActivarSeleccionarFicha()
     {
         //Empiezo corutina
+        transform.parent.GetChild(2).gameObject.GetComponent<homeScript>().imagenFichaSeleccionada.gameObject.SetActive(true);
+        transform.parent.GetChild(2).gameObject.GetComponent<homeScript>().imagenFichaPredeterminada.gameObject.SetActive(false);
         StartCoroutine(seleccionFicha());
     }
 
     private void QuitarSeleccionFicha()
     {
         //Empiezo corutina
+        transform.parent.GetChild(2).gameObject.GetComponent<homeScript>().imagenFichaSeleccionada.gameObject.SetActive(false);
+        transform.parent.GetChild(2).gameObject.GetComponent<homeScript>().imagenFichaPredeterminada.gameObject.SetActive(true);
         StartCoroutine(QuitarSeleccionObjeto("ficha"));
     }
 

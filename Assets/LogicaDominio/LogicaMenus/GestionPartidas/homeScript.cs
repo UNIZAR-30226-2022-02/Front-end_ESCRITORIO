@@ -16,6 +16,7 @@ public class homeScript : MonoBehaviour
     public InputField codigoPartida;
     public Dropdown tipoSincronizacion, tipoPrivacidad, numJugadoresCrear, numJugadoresBuscar;
     public GameObject BordeCrearPartida,BordeEsperarJugadores,BordeMostrarCodigo;
+    public RawImage imagenMapaSeleccionado, imagenFichaSeleccionada, imagenFichaPredeterminada;
     public bool enPartida;
     private screenManager sm;
 
@@ -43,6 +44,16 @@ public class homeScript : MonoBehaviour
             botonContinuarPartida.gameObject.SetActive(true);
             //PEDIR JUGADAS Y METERLAS A LA COLA
             StartCoroutine(RecuperarJugadas());
+        }
+
+        //Inicializo las imagenes de los objetos comprados
+        if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().fichaSeleccionada == true){
+            imagenFichaSeleccionada.gameObject.SetActive(true);
+            imagenFichaPredeterminada.gameObject.SetActive(false);
+        }
+
+        if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().mapaSeleccionado == true){
+            imagenMapaSeleccionado.gameObject.SetActive(true);
         }
         
         botonAtras.onClick.AddListener(quitarCrearPartida);
@@ -115,7 +126,7 @@ public class homeScript : MonoBehaviour
             transform.parent.GetChild(4).gameObject.GetComponent<tiendaScript>().botonSeleccionarFicha.gameObject.SetActive(true);
             if(transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().fichaSeleccionada == true){
                 transform.parent.GetChild(4).gameObject.GetComponent<tiendaScript>().botonSeleccionarFicha.gameObject.SetActive(false);
-                transform.parent.GetChild(4).gameObject.GetComponent<tiendaScript>().botonDeseleccionarFicha.gameObject.SetActive(true);
+                transform.parent.GetChild(4).gameObject.GetComponent<tiendaScript>().botonDeseleccionarFicha.gameObject.SetActive(true);       
             }
         }
 
