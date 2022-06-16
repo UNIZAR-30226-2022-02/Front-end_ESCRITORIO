@@ -11,11 +11,12 @@ using UnityEngine.Networking;
 using LogicaInGame.Jugadas;
 public class homeScript : MonoBehaviour
 {
-    public Button botonTienda, botonHistorial, botonCrearPartidaDatos,botonCrearPartidaEnviar, botonBuscarPartida, botonUnirse, botonAtras,botonIrTablero;
+    public Button botonTienda, botonHistorial, botonCrearPartidaDatos,botonCrearPartidaEnviar, botonBuscarPartida, botonUnirse, botonAtras,botonIrTablero,botonContinuarPartida;
     public Text username,errorBuscarPartida, errorUnirsePartida, errorEstoyEnPartida,codigoDePartida;
     public InputField codigoPartida;
     public Dropdown tipoSincronizacion, tipoPrivacidad, numJugadoresCrear, numJugadoresBuscar;
     public GameObject BordeCrearPartida,BordeEsperarJugadores,BordeMostrarCodigo;
+    public bool enPartida;
     private screenManager sm;
 
     [System.Serializable]
@@ -29,29 +30,21 @@ public class homeScript : MonoBehaviour
         public string respuesta;
         public int idPartida;
     }
-    
-   /* [System.Serializable]
-    public class JugadasRecuperadas{
-        public Jugada[] listaJugadas;
-    }*/
-
 
     // Start is called before the first frame update
     void Start()
     {
-        username.text = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().myUsername;
-        
-        bool enPartida = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().estoyEnPartida;
-
+        username.text = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().myUsername;     
+        enPartida = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().estoyEnPartida;
+        botonContinuarPartida.gameObject.SetActive(false);
         if(enPartida){
-
             //Quitar botones de crear y buscar
             botonCrearPartidaDatos.gameObject.SetActive(false);
-
+            botonContinuarPartida.gameObject.SetActive(true);
             //PEDIR JUGADAS Y METERLAS A LA COLA
             StartCoroutine(RecuperarJugadas());
         }
-
+        
         botonAtras.onClick.AddListener(quitarCrearPartida);
         botonTienda.onClick.AddListener(irTienda);
         botonHistorial.onClick.AddListener(historial);
@@ -60,6 +53,7 @@ public class homeScript : MonoBehaviour
         botonBuscarPartida.onClick.AddListener(buscarPartida);
         botonUnirse.onClick.AddListener(unirsePartida);
         botonIrTablero.onClick.AddListener(irTablero);
+        botonContinuarPartida.onClick.AddListener(irTablero);
         sm = transform.parent.parent.GetComponent<screenManager>();
     }
 
@@ -80,14 +74,9 @@ public class homeScript : MonoBehaviour
         Regex regex = new Regex(@"{.*?}");
         MatchCollection matches = regex.Matches(resultado);
         ColaJugadas colaJugadas = transform.parent.parent.gameObject.GetComponent<ColaJugadas>();   
-        Debug.Log("Resultado:" + req.downloadHandler.text);
         for(int i = 0; i < matches.Count; i++){
-            //Jugada jug = JsonUtility.FromJson<Jugada>(json);
-            Debug.Log("Json: " + matches[i].Value);
             Jugada jug = Jugada.parseJsonJugada(matches[i].Value);
             colaJugadas.nuevaJugada(jug);
-            Debug.Log("userId" + jug.userId);
-            Debug.Log("Jugada:" + jug.ToString());
         }
     }
 
@@ -102,7 +91,7 @@ public class homeScript : MonoBehaviour
         if(mensajeError == "estoyEnPartida"){
             errorEstoyEnPartida.gameObject.SetActive(true);
             yield return new WaitForSeconds(2);
-            errorEstoyEnPartida.gameObject.SetActive(true);
+            errorEstoyEnPartida.gameObject.SetActive(false);
         }
         else if(mensajeError == "errorUnirse"){
             errorUnirsePartida.gameObject.SetActive(true);
@@ -162,8 +151,13 @@ public class homeScript : MonoBehaviour
 
     //LLamo a una corutina para enviar los datos introducidos en el pop up de crear partida 
     private void enviarDatosCrearPartida(){
-        BordeCrearPartida.gameObject.SetActive(false);
-        StartCoroutine(enviarDatosCrear());
+        if(enPartida){
+            StartCoroutine(MostrarError("estoyEnPartida"));
+        }
+        else{
+            BordeCrearPartida.gameObject.SetActive(false);
+            StartCoroutine(enviarDatosCrear());
+        }
     }
     
     //Envio los datos necesarios para crear una partida y no recibo nada (supongo que siempre se puede)
@@ -222,8 +216,7 @@ public class homeScript : MonoBehaviour
         bool enPartida = transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().estoyEnPartida;
         //Si estoy en partida muestro error
         if(enPartida){
-            sm.switchScreens(this.name, "Tablero");
-        }
+            StartCoroutine(MostrarError("estoyEnPartida"));        }
         //Sino le envio datos al servidor para que busque una partida
         else{
             StartCoroutine(enviarDatosBuscar());
@@ -263,7 +256,11 @@ public class homeScript : MonoBehaviour
     //LLamo a una corutina para que envie al servidor los datos para unirse a una partida
     private void unirsePartida()
     {
-        StartCoroutine(enviarDatosUnirse());
+        if(enPartida){
+            StartCoroutine(MostrarError("estoyEnPartida"));        }
+        else{
+            StartCoroutine(enviarDatosUnirse());
+        }
     }
 
     //Envio los datos necesarios al servidor un codigo de partida y un nombre de usuario,
