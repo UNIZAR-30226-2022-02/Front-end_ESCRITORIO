@@ -26,6 +26,32 @@ public class Jugador : MonoBehaviour
     // ====================
     // - Metodos Publicos -
     // ====================
+    
+    public void inicializa(string userName, int nJugadores){
+        // Inicializa resto de atributos
+        this.userName = userName;
+        usernameText.text = userName;
+
+        switch (nJugadores){
+            case 3:
+                setNTropasSinColocar(35);
+                break;
+            case 4:
+                setNTropasSinColocar(30);
+                break;
+            case 5:
+                setNTropasSinColocar(25);
+                break;
+            case 6:
+                setNTropasSinColocar(20);
+                break;
+            default:
+                setNTropasSinColocar(-1);
+                Debug.Log("Error inicializando jugador " + id 
+                + ": El numero de jugadores no puede ser" + nJugadores );
+                break;
+        }
+    }
 
     public void anadirTropasTurno(){
         // Num territorios
@@ -83,33 +109,6 @@ public class Jugador : MonoBehaviour
                 haConquistado = false;
             }
         }
-    }
-
-    public void inicializa(string userName, int nJugadores){
-        // Inicializa resto de atributos
-        this.userName = userName;
-        usernameText.text = userName;
-
-        switch (nJugadores){
-            case 3:
-                setNTropasSinColocar(35);
-                break;
-            case 4:
-                setNTropasSinColocar(30);
-                break;
-            case 5:
-                setNTropasSinColocar(25);
-                break;
-            case 6:
-                setNTropasSinColocar(20);
-                break;
-            default:
-                setNTropasSinColocar(-1);
-                Debug.Log("Error inicializando jugador " + id 
-                + ": El numero de jugadores no puede ser" + nJugadores );
-                break;
-        }
-        
     }
 
     private int getTropasPorContinente(List<Territorio> misTerr){
