@@ -34,7 +34,8 @@ public class Jugador : MonoBehaviour
 
         switch (nJugadores){
             case 3:
-                setNTropasSinColocar(35);
+                setNTropasSinColocar(20);
+                //setNTropasSinColocar(35);
                 break;
             case 4:
                 setNTropasSinColocar(30);

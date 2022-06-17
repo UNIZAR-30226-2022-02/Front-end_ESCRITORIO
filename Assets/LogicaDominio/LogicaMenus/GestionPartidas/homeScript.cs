@@ -84,7 +84,8 @@ public class homeScript : MonoBehaviour
         resultado = resultado.Substring(1,resultado.Length - 2);
         Regex regex = new Regex(@"{.*?}");
         MatchCollection matches = regex.Matches(resultado);
-        ColaJugadas colaJugadas = transform.parent.parent.gameObject.GetComponent<ColaJugadas>();   
+        ColaJugadas colaJugadas = transform.parent.parent.gameObject.GetComponent<ColaJugadas>(); 
+        Debug.Log("Num colaJugadas:" + (matches.Count).ToString());  
         for(int i = 0; i < matches.Count; i++){
             Jugada jug = Jugada.parseJsonJugada(matches[i].Value);
             colaJugadas.nuevaJugada(jug);
@@ -242,7 +243,7 @@ public class homeScript : MonoBehaviour
         string user = username.text;
         form.AddField("username", user);
 
-        form.AddField("publica","Publica");
+        form.AddField("tipoPartida","Publica");
 
         string numJugadores = numJugadoresBuscar.captionText.text;
         form.AddField("numJugadores", numJugadores);
@@ -257,7 +258,7 @@ public class homeScript : MonoBehaviour
         Debug.Log("IdPartida:" + data.idPartida);
         transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartida = data.idPartida;
 
-        if(req.error != null){
+        if(req.error == null){
             if(resultado != "OK"){
                 StartCoroutine(MostrarError("errorBuscar"));
             }
@@ -282,25 +283,27 @@ public class homeScript : MonoBehaviour
         string user = username.text;
         form.AddField("username", user);
 
-        form.AddField("publica","Privada");
+        form.AddField("tipoPartida","Privada");
 
         string codigo = codigoPartida.text;
-        form.AddField("codigoPartida", codigo);
-
+        form.AddField("codigo", codigo);
+        Debug.Log("codigo: " + codigo);
         UnityWebRequest req = UnityWebRequest.Post("serverrisk.herokuapp.com/partida/unirPartida", form);
 
         yield return req.Send();
 
         string resultado = req.downloadHandler.text;
+        Debug.Log("resultado:" + resultado);
         //Actualizo las variables de entorno (como recibo lo mismo que al crear una partida publica lo recibo con ese tipo de dato)
         DatosCrearPublica data = JsonUtility.FromJson<DatosCrearPublica>(resultado);
         transform.parent.parent.gameObject.GetComponent<VariablesEntorno>().idPartida = data.idPartida;
-
-        if(req.error != null){
-            if(resultado != "OK"){
+       
+        if(req.error == null){
+            if(data.respuesta != "OK"){
                 StartCoroutine(MostrarError("errorUnirse"));
             }      
             else{
+                Debug.Log("Entro partida");
                 BordeEsperarJugadores.gameObject.SetActive(true);
             }
         }

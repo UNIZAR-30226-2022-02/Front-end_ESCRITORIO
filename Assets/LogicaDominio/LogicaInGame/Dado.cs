@@ -29,14 +29,14 @@ public class Dado : MonoBehaviour
         ultValor = 0;
         for (int i = 0; i <= 20; i++)
         {
-            int valor = Random.Range(0, 5);
+            int valor = Random.Range(1, 6);
             if(i==20){
                 valor = valorFinal;
             }
             
             caras[ultValor].SetActive(false);
-            caras[valor].SetActive(true);
-            ultValor = valor;
+            caras[valor-1].SetActive(true);
+            ultValor = valor-1;
             // Pause before next iteration
             yield return new WaitForSeconds(0.05f);
         }
